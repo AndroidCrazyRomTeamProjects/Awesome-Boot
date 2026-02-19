@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/navigation_home"
+        android:icon="@drawable/ic_oui_home_selector"
+        android:title="@string/title_home"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/navigation_hot_pics"
+        android:icon="@drawable/ic_oui_favorite_selector"
+        android:title="@string/title_hot_pics"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/navigation_menu"
+        android:icon="@drawable/ic_oui_drawer"
+        android:title="@string/title_menu"
+        app:showAsAction="always"/>
+
+</menu>

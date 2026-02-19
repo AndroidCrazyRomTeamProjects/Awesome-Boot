@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Awesome Boot</string>
+    <string name="title_home">Home</string>
+    <string name="title_hot_pics">Hot Pics</string>
+    <string name="title_menu">Menu</string>
+    <string name="preview_qmg_bootanimation">Preview current boot animation</string>
+</resources>

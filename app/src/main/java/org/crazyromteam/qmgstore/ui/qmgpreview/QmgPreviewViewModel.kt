@@ -2,7 +2,7 @@ package org.crazyromteam.qmgstore.ui.qmgpreview
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Color
+import android.graphics.Color.BLACK
 import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.Rect
@@ -17,6 +17,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.crazyromteam.qmgstore.qmg.DecodeQmg
+import org.crazyromteam.qmgstore.qmg.utils.Color
 import java.nio.ByteBuffer
 
 class QmgPreviewViewModel : ViewModel() {
@@ -28,7 +29,7 @@ class QmgPreviewViewModel : ViewModel() {
         width: Int,
         height: Int,
         frames: Int,
-        color: org.crazyromteam.qmgstore.qmg.utils.Color,
+        color: Color,
         surface: Surface
     ) {
         if (qmgData.isEmpty()) return
@@ -60,7 +61,7 @@ class QmgPreviewViewModel : ViewModel() {
                 if (canvas != null) {
                     try {
                         // Clear the canvas before drawing the new frame
-                        canvas.drawColor(Color.BLACK, PorterDuff.Mode.SRC)
+                        canvas.drawColor(BLACK, PorterDuff.Mode.SRC)
                         canvas.drawBitmap(bitmap, null, dstRect, paint)
                     } finally {
                         surface.unlockCanvasAndPost(canvas)

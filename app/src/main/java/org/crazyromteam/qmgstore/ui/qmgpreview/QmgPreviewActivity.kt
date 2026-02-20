@@ -7,7 +7,6 @@ import android.view.SurfaceView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import org.crazyromteam.qmgstore.R
-import org.crazyromteam.qmgstore.qmg.utils.Color
 import org.crazyromteam.qmgstore.qmg.utils.QmgHeader
 
 class QmgPreviewActivity : AppCompatActivity(), SurfaceHolder.Callback {

@@ -2,24 +2,20 @@ package org.crazyromteam.qmgstore.qmg
 
 import android.util.Log
 import org.crazyromteam.qmgstore.qmg.utils.Color
-
+import org.crazyromteam.qmgstore.qmg.utils.rgb565ToArgb8888
+import org.crazyromteam.qmgstore.qmg.utils.splitAlpha
 
 class DecodeQmg(
-    val qmgData: ByteArray?,
-    val width: Int,
-    val height: Int,
-    val frames: Int,
-    val bppType: Int
+    qmgData: ByteArray?,
+    private val width: Int,
+    private val height: Int,
+    private val frames: Int,
+    private val color: Color
 ) {
-    val color = Color()
-
-    // A large buffer to receive data from the native decoder.
     private val outBuf = ByteArray(width * height * 4)
-
     private val aniPtr: Long = LibQmg.CreateAniInfo(qmgData, 1).also {
         Log.d("QMG_DEBUG", "CreateAniInfo returned pointer: $it")
     }
-
     private var curFrame = 0
 
     fun nextFrame(): ByteArray? {
@@ -30,15 +26,10 @@ class DecodeQmg(
 
         val pixelCount = width * height
 
-        return when (bppType) {
+        return when (color) {
+            Color.RGB565 -> rgb565ToArgb8888(outBuf)
 
-            // RGB565
-            0 -> {
-                color.rgb565ToArgb8888(outBuf)
-            }
-
-            // RGB888
-            1 -> {
+            Color.RGB888 -> {
                 val out = ByteArray(pixelCount * 4)
                 var src = 0
                 var dst = 0
@@ -51,8 +42,7 @@ class DecodeQmg(
                 out
             }
 
-            // BGR888
-            2 -> {
+            Color.BGR888 -> {
                 val out = ByteArray(pixelCount * 4)
                 var src = 0
                 var dst = 0
@@ -66,27 +56,19 @@ class DecodeQmg(
                 out
             }
 
-            // RGB565 + Alpha (5658)
-            3 -> {
-                val (rgb, alpha) =
-                    color.splitAlphaRGB5658(outBuf, pixelCount)
-                color.rgb565ToArgb8888(rgb, alpha)
+            Color.RGB5658 -> {
+                val (rgb, alpha) = splitAlpha(outBuf, pixelCount, 3, false)
+                rgb565ToArgb8888(rgb, alpha)
             }
 
-            // Alpha + RGB565 (8565)
-            4 -> {
-                val (rgb, alpha) =
-                    color.splitAlphaRGB8565(outBuf, pixelCount)
-                color.rgb565ToArgb8888(rgb, alpha)
+            Color.RGB8565 -> {
+                val (rgb, alpha) = splitAlpha(outBuf, pixelCount, 3, true)
+                rgb565ToArgb8888(rgb, alpha)
             }
 
-            // ARGB8888
-            5 -> {
-                outBuf.copyOf(pixelCount * 4)
-            }
+            Color.ARGB8888 -> outBuf.copyOf(pixelCount * 4)
 
-            // RGBA8888
-            6 -> {
+            Color.RGBA8888 -> {
                 val out = ByteArray(pixelCount * 4)
                 var i = 0
                 repeat(pixelCount) {
@@ -99,8 +81,7 @@ class DecodeQmg(
                 out
             }
 
-            // BGRA8888
-            7 -> {
+            Color.BGRA8888 -> {
                 val out = ByteArray(pixelCount * 4)
                 var i = 0
                 repeat(pixelCount) {
@@ -113,12 +94,9 @@ class DecodeQmg(
                 out
             }
 
-            else -> {
-                null
-            }
+            else -> null
         }
     }
-
 
     fun release() {
         if (aniPtr != 0L) {
@@ -126,7 +104,3 @@ class DecodeQmg(
         }
     }
 }
-
-
-
-

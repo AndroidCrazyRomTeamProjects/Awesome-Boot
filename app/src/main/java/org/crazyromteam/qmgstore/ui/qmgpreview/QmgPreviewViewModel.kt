@@ -1,10 +1,14 @@
 package org.crazyromteam.qmgstore.ui.qmgpreview
 
 import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.PorterDuff
+import android.graphics.Rect
 import android.util.Log
+import android.view.Surface
 import androidx.core.graphics.createBitmap
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -12,7 +16,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.crazyromteam.qmgstore.qmg.DecodeQmg
 import java.nio.ByteBuffer
 
@@ -20,40 +23,51 @@ class QmgPreviewViewModel : ViewModel() {
     private var decoder: DecodeQmg? = null
     private var job: Job? = null
 
-    private val _frame = MutableLiveData<Bitmap>()
-    val frame: LiveData<Bitmap> = _frame
+    fun startQmg(
+        qmgData: ByteArray,
+        width: Int,
+        height: Int,
+        frames: Int,
+        color: org.crazyromteam.qmgstore.qmg.utils.Color,
+        surface: Surface
+    ) {
+        if (qmgData.isEmpty()) return
 
-    fun startQmg(qmgData: ByteArray, width: Int, height: Int, frames: Int, bppType: Int) {
-        // If the QMG data is empty, there's nothing to decode.
-        if (qmgData.isEmpty()) {
-            return
-        }
-
-        decoder = DecodeQmg(qmgData, width, height, frames, bppType)
+        decoder = DecodeQmg(qmgData, width, height, frames, color)
 
         Log.d(
             "QMG_Start",
-            "started decoding qmg: width=$width, height=$height, frames=$frames, bppType=$bppType"
+            "started decoding qmg: width=$width, height=$height, frames=$frames, color=$color"
         )
 
-        job?.cancel() // Cancel any previous job
+        job?.cancel()
         job = viewModelScope.launch(Dispatchers.Default) {
-            // Use isActive to ensure the loop is cancellable
+            val bitmap = createBitmap(width, height, Bitmap.Config.ARGB_8888)
+            val dstRect = Rect(0, 0, width, height)
+            val paint = Paint()
+
             while (isActive) {
-                // nextFrame() will return null if the native decoder isn't initialized
-                // or the animation ends. This will break the loop.
                 val raw = decoder?.nextFrame() ?: break
+                bitmap.copyPixelsFromBuffer(ByteBuffer.wrap(raw))
 
-                val bmp = createBitmap(width, height)
-
-                // If 'raw' is full of zeros, the bitmap will be transparent.
-                bmp.copyPixelsFromBuffer(ByteBuffer.wrap(raw))
-
-                withContext(Dispatchers.Main) {
-                    _frame.value = bmp
+                val canvas: Canvas? = try {
+                    surface.lockCanvas(null)
+                } catch (e: Exception) {
+                    Log.e("QMG_Canvas", "Error locking canvas: ", e)
+                    break
                 }
 
-                delay(33) // ~30 FPS (bootanimation-like)
+                if (canvas != null) {
+                    try {
+                        // Clear the canvas before drawing the new frame
+                        canvas.drawColor(Color.BLACK, PorterDuff.Mode.SRC)
+                        canvas.drawBitmap(bitmap, null, dstRect, paint)
+                    } finally {
+                        surface.unlockCanvasAndPost(canvas)
+                    }
+                }
+
+                delay(33) // ~30 FPS
             }
         }
     }
@@ -61,6 +75,7 @@ class QmgPreviewViewModel : ViewModel() {
     override fun onCleared() {
         super.onCleared()
         job?.cancel()
+        decoder?.release()
         decoder = null
     }
 }

@@ -13,10 +13,13 @@ fun rgb565ToArgb8888(rgb565: ByteArray, alpha: ByteArray? = null): ByteArray {
         val g = ((value shr 5) and 0x3F) * 255 / 63
         val b = (value and 0x1F) * 255 / 31
         val a = alpha?.get(it)?.toInt() ?: 255
-        out[dst++] = a.toByte()
+
+        // Push bytes in R, G, B, A order
         out[dst++] = r.toByte()
         out[dst++] = g.toByte()
         out[dst++] = b.toByte()
+        out[dst++] = a.toByte()
+
         src += 2
     }
     return out

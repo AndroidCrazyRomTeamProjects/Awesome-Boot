@@ -10,6 +10,11 @@ class QmgHeader(headerBytes: ByteArray) {
     val frames: Int
     val color: Color
     val isValid: Boolean
+    val duration: Int
+
+    val repeat: Boolean
+
+
 
     init {
         require(headerBytes.size >= 32) { "Header byte array must be at least 32 bytes" }
@@ -32,6 +37,9 @@ class QmgHeader(headerBytes: ByteArray) {
                 width = buffer.getShort(4).toInt() and 0xFFFF
                 height = buffer.getShort(6).toInt() and 0xFFFF
                 frames = 1 // IFEG parses as a single frame in the provided script
+                duration = 0
+                repeat = false
+
 
                 // IFEG color mapping from script
                 val header0x10 = headerBytes[0x10].toInt() and 0xFF
@@ -54,6 +62,8 @@ class QmgHeader(headerBytes: ByteArray) {
                 width = buffer.getShort(2).toInt() and 0xFFFF
                 height = buffer.getShort(4).toInt() and 0xFFFF
                 frames = buffer.getShort(10).toInt() and 0xFFFF
+                duration = buffer.getShort(12).toInt() and 0xFFFF
+                repeat = buffer.getShort(14).toInt() and 0xFFFF != 0
 
                 val flags = headerBytes[6].toInt() and 0xFF
                 val version = headerBytes[7].toInt() and 0xFF
@@ -83,6 +93,8 @@ class QmgHeader(headerBytes: ByteArray) {
                 width = buffer.getShort(6).toInt() and 0xFFFF
                 height = buffer.getShort(8).toInt() and 0xFFFF
                 frames = buffer.getShort(16).toInt() and 0xFFFF
+                duration = buffer.getShort(20).toInt() and 0xFFF
+                repeat = buffer.getShort(22).toInt() and 0xFFFF != 0
 
                 val bppType = headerBytes[3].toInt() and 0xFF
                 color = Color.fromInt(bppType)
@@ -96,6 +108,6 @@ class QmgHeader(headerBytes: ByteArray) {
     }
 
     override fun toString(): String {
-        return "QmgHeader(magic='$magic', width=$width, height=$height, frames=$frames, color=$color, isValid=$isValid)"
+        return "QmgHeader(magic='$magic', width=$width, height=$height, frames=$frames, duration=$duration, repeat=$repeat color=$color, isValid=$isValid)"
     }
 }

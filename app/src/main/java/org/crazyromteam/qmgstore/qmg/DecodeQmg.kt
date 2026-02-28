@@ -10,6 +10,8 @@ class DecodeQmg(
     private val width: Int,
     private val height: Int,
     private val frames: Int,
+    private val duration: Int,
+    private val repeat: Boolean,
     private val color: Color
 ) {
     private val outBuf = ByteArray(width * height * 4)

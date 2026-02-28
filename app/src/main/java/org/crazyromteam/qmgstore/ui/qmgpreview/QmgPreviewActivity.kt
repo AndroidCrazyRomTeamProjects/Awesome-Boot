@@ -43,6 +43,8 @@ class QmgPreviewActivity : AppCompatActivity(), SurfaceHolder.Callback {
                         header.width,
                         header.height,
                         header.frames,
+                        header.duration,
+                        header.repeat,
                         header.color,
                         holder.surface
                     )

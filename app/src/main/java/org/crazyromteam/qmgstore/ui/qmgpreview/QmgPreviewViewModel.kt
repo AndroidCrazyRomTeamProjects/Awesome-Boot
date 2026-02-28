@@ -29,16 +29,18 @@ class QmgPreviewViewModel : ViewModel() {
         width: Int,
         height: Int,
         frames: Int,
+        duration: Int,
+        repeat: Boolean,
         color: Color,
         surface: Surface
     ) {
         if (qmgData.isEmpty()) return
 
-        decoder = DecodeQmg(qmgData, width, height, frames, color)
+        decoder = DecodeQmg(qmgData, width, height, frames, duration, repeat, color)
 
         Log.d(
             "QMG_Start",
-            "started decoding qmg: width=$width, height=$height, frames=$frames, color=$color"
+            "started decoding qmg: width=$width, height=$height, frames=$frames, duration=${duration}ms, repeat=$repeat, color=$color"
         )
 
         job?.cancel()

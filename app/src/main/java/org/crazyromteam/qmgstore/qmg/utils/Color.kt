@@ -13,12 +13,11 @@ enum class Color(val bppType: Int) {
     RGB8565(4),    // Alpha + RGB565 diff order
     ARGB8888(5),   // ARGB
     RGBA8888(6),   // RGBA
-    BGRA8888(7),   // BGRA
-    UNKNOWN(-1);
+    BGRA8888(7);   // BGRA
 
     companion object {
         fun fromInt(value: Int): Color {
-            return entries.find { it.bppType == value } ?: UNKNOWN
+            return entries.find { it.bppType == value } ?: throw Exception("Unknown BPP type: $value")
         }
     }
 }

@@ -89,13 +89,8 @@ class QmgHeader(headerBytes: ByteArray) {
                 isValid = true
             }
             else -> {
-                // Invalid or unsupported format
-                magic = "UNKNOWN"
-                width = 0
-                height = 0
-                frames = 0
-                color = Color.UNKNOWN
                 isValid = false
+                throw Exception("Unknown animation type in QMG header")
             }
         }
     }

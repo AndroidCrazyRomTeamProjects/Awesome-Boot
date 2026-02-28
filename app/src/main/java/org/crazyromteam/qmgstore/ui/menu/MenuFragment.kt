@@ -22,7 +22,7 @@ class MenuFragment : Fragment() {
         val bootanimpreviewButton: Button = root.findViewById(R.id.boot_preview_button)
         bootanimpreviewButton.setOnClickListener {
             val intent = Intent(activity, QmgPreviewActivity::class.java)
-            intent.putExtra("qmgPath", "/system/media/bootsamsung.qmg")
+            intent.putExtra("bootanimation", true)
             startActivity(intent)
         }
         val shutdownpreviewButton: Button = root.findViewById(R.id.shutdown_preview_button)

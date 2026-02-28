@@ -6,24 +6,33 @@ import org.crazyromteam.qmgstore.qmg.utils.rgb565ToArgb8888
 import org.crazyromteam.qmgstore.qmg.utils.splitAlpha
 
 class DecodeQmg(
-    qmgData: ByteArray?,
+    private val qmgData: ByteArray?,
     private val width: Int,
     private val height: Int,
     private val frames: Int,
-    private val duration: Int,
-    private val repeat: Boolean,
     private val color: Color
 ) {
     private val outBuf = ByteArray(width * height * 4)
-    private val aniPtr: Long = LibQmg.CreateAniInfo(qmgData, 1).also {
-        Log.d("QMG_DEBUG", "CreateAniInfo returned pointer: $it")
-    }
+    private var aniPtr: Long = 0L
     private var curFrame = 0
+
+    init {
+        aniPtr = LibQmg.CreateAniInfo(qmgData, 1).also {
+            Log.d("QMG_DEBUG", "CreateAniInfo returned pointer: $it")
+        }
+    }
+
+    fun reset() {
+        curFrame = 0
+        if (aniPtr != 0L) {
+            LibQmg.DestroyAniInfo(aniPtr)
+        }
+        aniPtr = LibQmg.CreateAniInfo(qmgData, 1)
+    }
 
     fun nextFrame(): ByteArray? {
         if (curFrame >= frames || aniPtr == 0L) return null
         curFrame++
-
         LibQmg.DecodeAniFrame(aniPtr, outBuf)
 
         val pixelCount = width * height
@@ -39,7 +48,7 @@ class DecodeQmg(
                     out[dst++] = outBuf[src++] // R
                     out[dst++] = outBuf[src++] // G
                     out[dst++] = outBuf[src++] // B
-                    out[dst++] = 0xFF.toByte() // A (Always last!)
+                    out[dst++] = 0xFF.toByte() // A
                 }
                 out
             }
@@ -69,7 +78,6 @@ class DecodeQmg(
             }
 
             Color.ARGB8888 -> {
-                // Native is A,R,G,B -> Shift to R,G,B,A
                 val out = ByteArray(pixelCount * 4)
                 var i = 0
                 repeat(pixelCount) {
@@ -83,12 +91,10 @@ class DecodeQmg(
             }
 
             Color.RGBA8888 -> {
-                // Native is already R,G,B,A, so we just copy it directly
                 outBuf.copyOf(pixelCount * 4)
             }
 
             Color.BGRA8888 -> {
-                // Native is B,G,R,A -> Swap Red and Blue
                 val out = ByteArray(pixelCount * 4)
                 var i = 0
                 repeat(pixelCount) {
@@ -108,6 +114,7 @@ class DecodeQmg(
     fun release() {
         if (aniPtr != 0L) {
             LibQmg.DestroyAniInfo(aniPtr)
+            aniPtr = 0L
         }
     }
 }

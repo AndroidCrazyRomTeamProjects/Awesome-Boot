@@ -36,7 +36,7 @@ class QmgPreviewViewModel : ViewModel() {
     ) {
         if (qmgData.isEmpty()) return
 
-        decoder = DecodeQmg(qmgData, width, height, frames, duration, repeat, color)
+        decoder = DecodeQmg(qmgData, width, height, frames, color)
 
         Log.d(
             "QMG_Start",
@@ -49,29 +49,34 @@ class QmgPreviewViewModel : ViewModel() {
             val dstRect = Rect(0, 0, width, height)
             val paint = Paint()
 
-            while (isActive) {
-                val raw = decoder?.nextFrame() ?: break
-                bitmap.copyPixelsFromBuffer(ByteBuffer.wrap(raw))
+            do {
+                decoder?.reset()
+                for (i in 0 until frames) {
+                    if (!isActive) break
 
-                val canvas: Canvas? = try {
-                    surface.lockCanvas(null)
-                } catch (e: Exception) {
-                    Log.e("QMG_Canvas", "Error locking canvas: ", e)
-                    break
-                }
+                    val raw = decoder?.nextFrame() ?: break
+                    bitmap.copyPixelsFromBuffer(ByteBuffer.wrap(raw))
 
-                if (canvas != null) {
-                    try {
-                        // Clear the canvas before drawing the new frame
-                        canvas.drawColor(BLACK, PorterDuff.Mode.SRC)
-                        canvas.drawBitmap(bitmap, null, dstRect, paint)
-                    } finally {
-                        surface.unlockCanvasAndPost(canvas)
+                    val canvas: Canvas? = try {
+                        surface.lockCanvas(null)
+                    } catch (e: Exception) {
+                        Log.e("QMG_Canvas", "Error locking canvas: ", e)
+                        break
                     }
-                }
 
-                delay(33) // ~30 FPS
-            }
+                    if (canvas != null) {
+                        try {
+                            // Clear the canvas before drawing the new frame
+                            canvas.drawColor(BLACK, PorterDuff.Mode.SRC)
+                            canvas.drawBitmap(bitmap, null, dstRect, paint)
+                        } finally {
+                            surface.unlockCanvasAndPost(canvas)
+                        }
+                    }
+
+                    delay(33) // 30 FPS
+                }
+            } while (isActive && repeat)
         }
     }
 

@@ -35,7 +35,8 @@ class HomeViewModel : ViewModel() {
     private fun fetchThemes() {
         viewModelScope.launch {
             try {
-                val themeList = RetrofitClient.apiService.getThemes()
+                val themeResponse = RetrofitClient.apiService.getThemes()
+                val themeList = themeResponse.values.flatten()
                 _themes.postValue(themeList)
             } catch (e: Exception) {
                 Log.e("HomeViewModel", "Error fetching themes", e)

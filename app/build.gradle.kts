@@ -12,6 +12,9 @@ android {
     configurations.all {
         exclude(group = "androidx.appcompat", module = "appcompat")
         exclude(group = "androidx.core", module = "core")
+        exclude(group = "androidx.fragment", module = "fragment")
+        exclude(group = "androidx.viewpager", module = "viewpager")
+        exclude(group = "androidx.customview", module = "customview")
     }
 
     defaultConfig {
@@ -71,6 +74,11 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.livedata.ktx)
+
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.gson)
+    implementation(libs.glide)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

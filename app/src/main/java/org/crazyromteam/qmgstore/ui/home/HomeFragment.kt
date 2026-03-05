@@ -30,10 +30,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textDashboard
-        homeViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
 
         val themeAdapter = ThemeAdapter()
         binding.themesRecyclerView.apply {

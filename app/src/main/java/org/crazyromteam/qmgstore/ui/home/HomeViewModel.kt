@@ -17,10 +17,6 @@ import org.crazyromteam.qmgstore.api.ThemeItem
 
 class HomeViewModel : ViewModel() {
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "Welcome to QMG Store"
-    }
-    val text: LiveData<String> = _text
 
     private val _themes = MutableLiveData<List<ThemeItem>>()
     val themes: LiveData<List<ThemeItem>> = _themes

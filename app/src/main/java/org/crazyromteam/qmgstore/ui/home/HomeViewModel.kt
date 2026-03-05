@@ -37,24 +37,7 @@ class HomeViewModel : ViewModel() {
             } catch (e: Exception) {
                 Log.e("HomeViewModel", "Error fetching themes", e)
                 _error.postValue(e.message)
-
-                // For demonstration, let's load some mock data if server is unreachable
-                _themes.postValue(getMockThemes())
             }
         }
-    }
-
-    private fun getMockThemes(): List<ThemeItem> {
-        return listOf(
-            ThemeItem("Neon Cyber", "Alice", "https://picsum.photos/seed/1/200/300"),
-            ThemeItem("Dark Elegance", "Bob", "https://picsum.photos/seed/2/200/300"),
-            ThemeItem("Ocean Breeze", "Charlie", "https://picsum.photos/seed/3/200/300"),
-            ThemeItem("Minimal White", "Diana", "https://picsum.photos/seed/4/200/300"),
-            ThemeItem("Retro 80s", "Eve", "https://picsum.photos/seed/5/200/300"),
-            ThemeItem("Nature Green", "Frank", "https://picsum.photos/seed/6/200/300"),
-            ThemeItem("Galaxy Deep", "Grace", "https://picsum.photos/seed/7/200/300"),
-            ThemeItem("Material UI", "Hank", "https://picsum.photos/seed/8/200/300"),
-            ThemeItem("Sunset Orange", "Ivy", "https://picsum.photos/seed/9/200/300")
-        )
     }
 }

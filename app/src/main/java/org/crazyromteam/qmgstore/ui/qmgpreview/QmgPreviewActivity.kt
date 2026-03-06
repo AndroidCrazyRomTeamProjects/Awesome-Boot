@@ -47,12 +47,7 @@ class QmgPreviewActivity : AppCompatActivity(), SurfaceHolder.Callback {
                     if (header.isValid) {
                         vm.startQmg(
                             it,
-                            header.width,
-                            header.height,
-                            header.frames,
-                            header.duration,
                             header.repeat,
-                            header.color,
                             holder.surface
                         )
                     }

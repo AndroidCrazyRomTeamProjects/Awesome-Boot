@@ -2,10 +2,13 @@ package org.crazyromteam.qmgstore.ui.qmgpreview
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.Surface
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 import org.crazyromteam.qmgstore.R
 import org.crazyromteam.qmgstore.qmg.utils.QmgHeader
 import org.crazyromteam.qmgstore.qmg.utils.SystemUtils
@@ -14,6 +17,7 @@ class QmgPreviewActivity : AppCompatActivity(), SurfaceHolder.Callback {
 
     private lateinit var vm: QmgPreviewViewModel
     private var qmgData: ByteArray? = null
+    private var currentSurface: Surface? = null
     
     private var systemUtils = SystemUtils()
 
@@ -31,14 +35,18 @@ class QmgPreviewActivity : AppCompatActivity(), SurfaceHolder.Callback {
         } else {
             val qmgPath = intent.getStringExtra("qmgPath")
             if (qmgPath != null) {
-                qmgData = systemUtils.readSystemFile(qmgPath)
+                lifecycleScope.launch {
+                    qmgData = systemUtils.readSystemFile(qmgPath)
+                    checkAndStartQmg()
+                }
             }
         }
     }
 
-    override fun surfaceCreated(holder: SurfaceHolder) {
+    private fun checkAndStartQmg() {
+        val surface = currentSurface ?: return
         if (intent.getBooleanExtra("bootanimation", false)) {
-            val bootAnimationPreview = BootAnimationPreview(holder.surface, vm)
+            val bootAnimationPreview = BootAnimationPreview(surface, vm, lifecycleScope)
             bootAnimationPreview.playAnimation()
         } else {
             qmgData?.let {
@@ -53,7 +61,7 @@ class QmgPreviewActivity : AppCompatActivity(), SurfaceHolder.Callback {
                             header.duration,
                             header.repeat,
                             header.color,
-                            holder.surface
+                            surface
                         )
                     }
                 }
@@ -61,7 +69,14 @@ class QmgPreviewActivity : AppCompatActivity(), SurfaceHolder.Callback {
         }
     }
 
+    override fun surfaceCreated(holder: SurfaceHolder) {
+        currentSurface = holder.surface
+        checkAndStartQmg()
+    }
+
     override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {}
 
-    override fun surfaceDestroyed(holder: SurfaceHolder) {}
+    override fun surfaceDestroyed(holder: SurfaceHolder) {
+        currentSurface = null
+    }
 }

@@ -13,6 +13,9 @@ class DecodeQmg(
     private val color: Color
 ) {
     private val outBuf = ByteArray(width * height * 4)
+    private val reusableOut = ByteArray(width * height * 4)
+    private var splitAlphaPixels: ByteArray? = null
+    private var splitAlphaValues: ByteArray? = null
     private var aniPtr: Long = 0L
     private var curFrame = 0
 
@@ -38,10 +41,10 @@ class DecodeQmg(
         val pixelCount = width * height
 
         return when (color) {
-            Color.RGB565 -> rgb565ToArgb8888(outBuf)
+            Color.RGB565 -> rgb565ToArgb8888(outBuf, null, reusableOut, pixelCount)
 
             Color.RGB888 -> {
-                val out = ByteArray(pixelCount * 4)
+                val out = reusableOut
                 var src = 0
                 var dst = 0
                 repeat(pixelCount) {
@@ -54,7 +57,7 @@ class DecodeQmg(
             }
 
             Color.BGR888 -> {
-                val out = ByteArray(pixelCount * 4)
+                val out = reusableOut
                 var src = 0
                 var dst = 0
                 repeat(pixelCount) {
@@ -68,17 +71,21 @@ class DecodeQmg(
             }
 
             Color.RGB5658 -> {
-                val (rgb, alpha) = splitAlpha(outBuf, pixelCount, 3, false)
-                rgb565ToArgb8888(rgb, alpha)
+                if (splitAlphaPixels == null) splitAlphaPixels = ByteArray(pixelCount * 2)
+                if (splitAlphaValues == null) splitAlphaValues = ByteArray(pixelCount)
+                val (rgb, alpha) = splitAlpha(outBuf, pixelCount, 3, false, splitAlphaPixels, splitAlphaValues)
+                rgb565ToArgb8888(rgb, alpha, reusableOut, pixelCount)
             }
 
             Color.RGB8565 -> {
-                val (rgb, alpha) = splitAlpha(outBuf, pixelCount, 3, true)
-                rgb565ToArgb8888(rgb, alpha)
+                if (splitAlphaPixels == null) splitAlphaPixels = ByteArray(pixelCount * 2)
+                if (splitAlphaValues == null) splitAlphaValues = ByteArray(pixelCount)
+                val (rgb, alpha) = splitAlpha(outBuf, pixelCount, 3, true, splitAlphaPixels, splitAlphaValues)
+                rgb565ToArgb8888(rgb, alpha, reusableOut, pixelCount)
             }
 
             Color.ARGB8888 -> {
-                val out = ByteArray(pixelCount * 4)
+                val out = reusableOut
                 var i = 0
                 repeat(pixelCount) {
                     out[i + 0] = outBuf[i + 1] // R
@@ -91,11 +98,12 @@ class DecodeQmg(
             }
 
             Color.RGBA8888 -> {
-                outBuf.copyOf(pixelCount * 4)
+                System.arraycopy(outBuf, 0, reusableOut, 0, pixelCount * 4)
+                reusableOut
             }
 
             Color.BGRA8888 -> {
-                val out = ByteArray(pixelCount * 4)
+                val out = reusableOut
                 var i = 0
                 repeat(pixelCount) {
                     out[i + 0] = outBuf[i + 2] // R

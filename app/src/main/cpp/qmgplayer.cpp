@@ -15,16 +15,11 @@ extern "C" {
 typedef void** (*QmageDecCreateAniInfo_t)(uint8_t*, int, int);
 typedef void   (*QmageDecDestroyAniInfo_t)(void**);
 typedef int    (*QmageDecodeAniFrame_t)(void**, uint8_t*);
-typedef int    (*QmageDecodeFrame_t)(uint8_t*, int, uint8_t*);
-typedef int    (*QmageDecGetLastErr_t)();
-
 static void* qmgHandle = nullptr;
 
 static QmageDecCreateAniInfo_t  QmageDecCreateAniInfo = nullptr;
 static QmageDecDestroyAniInfo_t QmageDecDestroyAniInfo = nullptr;
 static QmageDecodeAniFrame_t    QmageDecodeAniFrame = nullptr;
-static QmageDecodeFrame_t       QmageDecodeFrame = nullptr;
-static QmageDecGetLastErr_t     QmageDecGetLastErr = nullptr;
 
 static bool loadQmgLibrary() {
     if (qmgHandle) return true;
@@ -41,10 +36,6 @@ static bool loadQmgLibrary() {
         (QmageDecDestroyAniInfo_t)dlsym(qmgHandle, "QmageDecDestroyAniInfo");
     QmageDecodeAniFrame =
         (QmageDecodeAniFrame_t)dlsym(qmgHandle, "QmageDecodeAniFrame");
-    QmageDecodeFrame =
-        (QmageDecodeFrame_t)dlsym(qmgHandle, "QmageDecodeFrame");
-    QmageDecGetLastErr =
-        (QmageDecGetLastErr_t)dlsym(qmgHandle, "QmageDecGetLastErr");
 
     if (!QmageDecCreateAniInfo || !QmageDecodeAniFrame) {
         LOGE("dlsym failed for one or more functions");
@@ -114,34 +105,6 @@ Java_org_crazyromteam_qmgstore_qmg_LibQmg_DecodeAniFrame(
     LOGI("DecodeAniFrame returned: %d. First 4 bytes of outBuf: %02x %02x %02x %02x", ret, out[0], out[1], out[2], out[3]);
     env->ReleaseByteArrayElements(outBuf, (jbyte*)out, 0);
     return ret;
-}
-
-JNIEXPORT jint JNICALL
-Java_org_crazyromteam_qmgstore_qmg_LibQmg_DecodeFrame(
-        JNIEnv* env,
-        jobject,
-        jbyteArray inBuf,
-        jint inLen,
-        jbyteArray outBuf) {
-    if (!loadQmgLibrary()) return -1;
-
-    uint8_t* in  = (uint8_t*)env->GetByteArrayElements(inBuf, nullptr);
-    uint8_t* out = (uint8_t*)env->GetByteArrayElements(outBuf, nullptr);
-
-    int ret = QmageDecodeFrame(in, inLen, out);
-
-    env->ReleaseByteArrayElements(inBuf, (jbyte*)in, JNI_ABORT);
-    env->ReleaseByteArrayElements(outBuf, (jbyte*)out, 0);
-
-    return ret;
-}
-
-JNIEXPORT jint JNICALL
-Java_org_crazyromteam_qmgstore_qmg_LibQmg_GetLastErr(
-        JNIEnv*,
-        jobject) {
-    if (!loadQmgLibrary()) return -1;
-    return QmageDecGetLastErr();
 }
 
 }

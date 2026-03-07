@@ -5,13 +5,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import org.crazyromteam.qmgstore.R
 import org.crazyromteam.qmgstore.api.ThemeItem
 
-class ThemeAdapter(private var themes: List<ThemeItem> = emptyList()) :
-    RecyclerView.Adapter<ThemeAdapter.ThemeViewHolder>() {
+class ThemeAdapter :
+    ListAdapter<ThemeItem, ThemeAdapter.ThemeViewHolder>(ThemeDiffCallback()) {
 
     class ThemeViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val previewImage: ImageView = view.findViewById(R.id.themePreview)
@@ -26,7 +28,7 @@ class ThemeAdapter(private var themes: List<ThemeItem> = emptyList()) :
     }
 
     override fun onBindViewHolder(holder: ThemeViewHolder, position: Int) {
-        val theme = themes[position]
+        val theme = getItem(position)
         holder.nameText.text = theme.name
         holder.creatorText.text = theme.creator
 
@@ -36,10 +38,18 @@ class ThemeAdapter(private var themes: List<ThemeItem> = emptyList()) :
             .into(holder.previewImage)
     }
 
-    override fun getItemCount() = themes.size
-
     fun updateData(newThemes: List<ThemeItem>) {
-        themes = newThemes
-        notifyDataSetChanged()
+        submitList(newThemes)
+    }
+}
+
+class ThemeDiffCallback : DiffUtil.ItemCallback<ThemeItem>() {
+    override fun areItemsTheSame(oldItem: ThemeItem, newItem: ThemeItem): Boolean {
+        // Use name and creator to uniquely identify an item, as there is no specific ID field
+        return oldItem.name == newItem.name && oldItem.creator == newItem.creator
+    }
+
+    override fun areContentsTheSame(oldItem: ThemeItem, newItem: ThemeItem): Boolean {
+        return oldItem == newItem
     }
 }

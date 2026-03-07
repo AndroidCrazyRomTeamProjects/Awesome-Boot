@@ -1,16 +1,12 @@
 package org.crazyromteam.qmgstore.ui.home
 
 
-import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import org.crazyromteam.qmgstore.qmg.DecodeQmg
-import java.nio.ByteBuffer
 import kotlinx.coroutines.*
-import androidx.core.graphics.createBitmap
 import org.crazyromteam.qmgstore.api.RetrofitClient
 import org.crazyromteam.qmgstore.api.ThemeItem
 

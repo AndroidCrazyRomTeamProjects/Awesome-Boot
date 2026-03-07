@@ -1,8 +1,13 @@
 package org.crazyromteam.qmgstore.qmg.utils
 
-fun rgb565ToArgb8888(rgb565: ByteArray, alpha: ByteArray? = null): ByteArray {
-    val pixels = rgb565.size / 2
-    val out = ByteArray(pixels * 4)
+fun rgb565ToArgb8888(
+    rgb565: ByteArray,
+    alpha: ByteArray? = null,
+    out: ByteArray? = null,
+    pixelCount: Int = rgb565.size / 2
+): ByteArray {
+    val pixels = pixelCount
+    val result = out ?: ByteArray(pixels * 4)
     var src = 0
     var dst = 0
     repeat(pixels) {
@@ -15,19 +20,26 @@ fun rgb565ToArgb8888(rgb565: ByteArray, alpha: ByteArray? = null): ByteArray {
         val a = alpha?.get(it)?.toInt() ?: 255
 
         // Push bytes in R, G, B, A order
-        out[dst++] = r.toByte()
-        out[dst++] = g.toByte()
-        out[dst++] = b.toByte()
-        out[dst++] = a.toByte()
+        result[dst++] = r.toByte()
+        result[dst++] = g.toByte()
+        result[dst++] = b.toByte()
+        result[dst++] = a.toByte()
 
         src += 2
     }
-    return out
+    return result
 }
 
-fun splitAlpha(data: ByteArray, pixelCount: Int, pixelSize: Int, alphaFirst: Boolean): Pair<ByteArray, ByteArray> {
-    val pixels = ByteArray(pixelCount * (pixelSize - 1))
-    val alpha = ByteArray(pixelCount)
+fun splitAlpha(
+    data: ByteArray,
+    pixelCount: Int,
+    pixelSize: Int,
+    alphaFirst: Boolean,
+    outPixels: ByteArray? = null,
+    outAlpha: ByteArray? = null
+): Pair<ByteArray, ByteArray> {
+    val pixels = outPixels ?: ByteArray(pixelCount * (pixelSize - 1))
+    val alpha = outAlpha ?: ByteArray(pixelCount)
     var src = 0
     var p = 0
     var a = 0

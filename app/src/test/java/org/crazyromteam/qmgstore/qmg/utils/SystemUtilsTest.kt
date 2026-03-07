@@ -7,7 +7,7 @@ import java.io.File
 
 class SystemUtilsTest {
     @Test
-    fun testReadSystemFile() = runBlocking {
+    fun testReadSystemFile(): Unit = runBlocking {
         val tempFile = File.createTempFile("test", ".txt")
         val content = "Hello, World!".toByteArray()
         tempFile.writeBytes(content)
@@ -21,5 +21,14 @@ class SystemUtilsTest {
         assertArrayEquals(content, result)
 
         tempFile.delete()
+    }
+
+    @Test
+    fun testReadSystemFile_nonExistentFile(): Unit = runBlocking {
+        val systemUtils = SystemUtils()
+        val nonExistentPath = "/path/to/some/completely/non/existent/file_${System.currentTimeMillis()}.txt"
+        val result = systemUtils.readSystemFile(nonExistentPath)
+
+        assertArrayEquals(ByteArray(0), result)
     }
 }

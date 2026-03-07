@@ -56,7 +56,6 @@ class QmgPreviewActivity : AppCompatActivity(), SurfaceHolder.Callback {
                         vm.startQmg(
                             it,
                             header.repeat,
-                            header.color,
                             surface
                         )
                     }

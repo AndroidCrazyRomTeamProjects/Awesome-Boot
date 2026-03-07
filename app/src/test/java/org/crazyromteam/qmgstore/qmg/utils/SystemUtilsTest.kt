@@ -7,7 +7,7 @@ import java.io.File
 
 class SystemUtilsTest {
     @Test
-    fun testReadSystemFile() = runBlocking {
+    fun testReadSystemFile(): Unit = runBlocking {
         val tempFile = File.createTempFile("test", ".txt")
         val content = "Hello, World!".toByteArray()
         tempFile.writeBytes(content)

@@ -22,4 +22,13 @@ class SystemUtilsTest {
 
         tempFile.delete()
     }
+
+    @Test
+    fun testReadSystemFile_nonExistentFile(): Unit = runBlocking {
+        val systemUtils = SystemUtils()
+        val nonExistentPath = "/path/to/some/completely/non/existent/file_${System.currentTimeMillis()}.txt"
+        val result = systemUtils.readSystemFile(nonExistentPath)
+
+        assertArrayEquals(ByteArray(0), result)
+    }
 }

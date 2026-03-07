@@ -81,12 +81,7 @@ class QmgPreviewViewModel : ViewModel() {
 
     fun startQmg(
         qmgData: ByteArray,
-        width: Int,
-        height: Int,
-        frames: Int,
-        duration: Int,
         repeat: Boolean,
-        color: Color,
         surface: Surface
     ) {
         if (qmgData.isEmpty()) return

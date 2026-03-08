@@ -32,6 +32,9 @@ class ThemeAdapter :
         holder.nameText.text = theme.name
         holder.creatorText.text = theme.creator
 
+        // Set content description for accessibility
+        holder.itemView.contentDescription = "Preview of ${theme.name} theme by ${theme.creator}"
+
         Glide.with(holder.itemView.context)
             .load(theme.previewUrl)
             .centerCrop()

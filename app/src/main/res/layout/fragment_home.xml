@@ -19,7 +19,7 @@
         android:id="@+id/featuredTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Featured Themes"
+        android:text="@string/recent_themes"
         android:textStyle="bold"
         android:textSize="24sp"
         android:paddingStart="16dp"
@@ -47,7 +47,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:visibility="gone"
-            android:contentDescription="Loading themes" />
+            android:contentDescription="@string/loading_themes" />
 
         <LinearLayout
             android:id="@+id/errorContainer"

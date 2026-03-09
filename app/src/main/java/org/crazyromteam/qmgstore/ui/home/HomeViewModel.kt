@@ -20,12 +20,16 @@ class HomeViewModel : ViewModel() {
     private val _error = MutableLiveData<String>()
     val error: LiveData<String> = _error
 
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> = _isLoading
+
     init {
         fetchThemes()
     }
 
     private fun fetchThemes() {
         viewModelScope.launch {
+            _isLoading.postValue(true)
             try {
                 val themeResponse = RetrofitClient.apiService.getThemes()
                 val themeList = themeResponse.values.flatten()
@@ -33,6 +37,8 @@ class HomeViewModel : ViewModel() {
             } catch (e: Exception) {
                 Log.e("HomeViewModel", "Error fetching themes", e)
                 _error.postValue(e.message)
+            } finally {
+                _isLoading.postValue(false)
             }
         }
     }

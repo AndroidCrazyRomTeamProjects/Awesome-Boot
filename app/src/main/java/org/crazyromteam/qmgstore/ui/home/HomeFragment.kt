@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -38,6 +39,17 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
         homeViewModel.themes.observe(viewLifecycleOwner) { themes ->
             themeAdapter.updateData(themes)
+        }
+
+        homeViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            binding.loadingProgressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+            binding.themesRecyclerView.visibility = if (isLoading) View.GONE else View.VISIBLE
+        }
+
+        homeViewModel.error.observe(viewLifecycleOwner) { errorMessage ->
+            if (!errorMessage.isNullOrEmpty()) {
+                Toast.makeText(context, "Failed to load themes: $errorMessage", Toast.LENGTH_LONG).show()
+            }
         }
 
         return root

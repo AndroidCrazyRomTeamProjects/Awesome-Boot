@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import org.crazyromteam.qmgstore.R
 import org.crazyromteam.qmgstore.api.ThemeItem
+import org.crazyromteam.qmgstore.api.RetrofitClient
 
 class ThemeAdapter :
     ListAdapter<ThemeItem, ThemeAdapter.ThemeViewHolder>(ThemeDiffCallback()) {
@@ -36,7 +37,7 @@ class ThemeAdapter :
         holder.itemView.contentDescription = "Preview of ${theme.name} theme by ${theme.creator}"
 
         Glide.with(holder.itemView.context)
-            .load(theme.previewUrl)
+            .load(RetrofitClient.BASE_URL + "themes/" + theme.id + "/preview.png")
             .centerCrop()
             .into(holder.previewImage)
     }

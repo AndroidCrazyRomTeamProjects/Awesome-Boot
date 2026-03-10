@@ -30,14 +30,16 @@ class HomeViewModel : ViewModel() {
     fun fetchThemes() {
         viewModelScope.launch {
             _isLoading.postValue(true)
-            _error.postValue(null) // Reset error on fetch
+            _error.postValue("") // Reset error on fetch (using empty string instead of null as requested by previous compiler error)
             try {
                 val themeResponse = RetrofitClient.apiService.getThemes()
-                val themeList = themeResponse.values.flatten()
+                val themeList = themeResponse.flatMap { (id, items) ->
+                    items.onEach { it.id = id }
+                }
                 _themes.postValue(themeList)
             } catch (e: Exception) {
                 Log.e("HomeViewModel", "Error fetching themes", e)
-                _error.postValue(e.message)
+                _error.postValue(e.message ?: "Unknown error")
             } finally {
                 _isLoading.postValue(false)
             }

@@ -60,6 +60,14 @@
             android:padding="16dp"
             android:visibility="gone">
 
+            <ImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginBottom="8dp"
+                android:src="@android:drawable/ic_dialog_alert"
+                android:contentDescription="@null"
+                app:tint="?android:attr/textColorSecondary" />
+
             <TextView
                 android:id="@+id/errorTextView"
                 android:layout_width="wrap_content"

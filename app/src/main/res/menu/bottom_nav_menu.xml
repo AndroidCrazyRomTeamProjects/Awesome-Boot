@@ -6,18 +6,18 @@
         android:id="@+id/navigation_home"
         android:icon="@drawable/ic_oui_home_selector"
         android:title="@string/title_home"
-        app:showAsAction="ifRoom"/>
+        android:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/navigation_hot_pics"
         android:icon="@drawable/ic_oui_favorite_selector"
         android:title="@string/title_hot_pics"
-        app:showAsAction="ifRoom"/>
+        android:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/navigation_menu"
         android:icon="@drawable/ic_oui_drawer"
         android:title="@string/title_menu"
-        app:showAsAction="ifRoom"/>
+        android:showAsAction="ifRoom"/>
 
 </menu>

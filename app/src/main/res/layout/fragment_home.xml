@@ -24,7 +24,8 @@
         android:textSize="24sp"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        android:paddingBottom="8dp" />
+        android:paddingBottom="8dp"
+        android:accessibilityHeading="true" />
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -59,6 +60,14 @@
             android:orientation="vertical"
             android:padding="16dp"
             android:visibility="gone">
+
+            <ImageView
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_marginBottom="16dp"
+                android:src="@android:drawable/ic_dialog_alert"
+                app:tint="?android:attr/textColorSecondary"
+                android:contentDescription="@null" />
 
             <TextView
                 android:id="@+id/errorTextView"

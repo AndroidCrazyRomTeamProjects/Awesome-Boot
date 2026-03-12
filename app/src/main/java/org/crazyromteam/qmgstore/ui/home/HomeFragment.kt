@@ -9,6 +9,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import org.crazyromteam.qmgstore.R
 import org.crazyromteam.qmgstore.databinding.FragmentHomeBinding
+import android.content.Intent
+import org.crazyromteam.qmgstore.ThemeDetailActivity
 
 class HomeFragment : Fragment() {
 
@@ -29,7 +31,7 @@ class HomeFragment : Fragment() {
         
         val homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
 
-        val themeAdapter = ThemeAdapter()
+        val themeAdapter = ThemeAdapter({ startActivity(Intent(activity, ThemeDetailActivity::class.java)) })
         binding.themesRecyclerView.apply {
             layoutManager = GridLayoutManager(context, 3)
             adapter = themeAdapter

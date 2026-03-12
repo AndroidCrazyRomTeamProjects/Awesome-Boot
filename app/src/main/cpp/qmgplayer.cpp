@@ -72,7 +72,6 @@ Java_org_crazyromteam_qmgstore_qmg_LibQmg_CreateAniInfo(
     }
 
     LOGI("QmageDecCreateAniInfo succeeded, pointer: %p", ani);
-    // Store buffer pointer inside aniInfo[0] if needed, otherwise manage separately
     return (jlong)ani;
 }
 
@@ -85,7 +84,17 @@ Java_org_crazyromteam_qmgstore_qmg_LibQmg_DestroyAniInfo(
     if (!loadQmgLibrary()) return;
 
     if (!aniPtr) return;
-    QmageDecDestroyAniInfo((void**)aniPtr);
+
+    void** ani = (void**)aniPtr;
+    // The buffer allocated in CreateAniInfo is stored in ani[0]
+    void* buffer = ani[0];
+
+    QmageDecDestroyAniInfo(ani);
+
+    if (buffer) {
+        free(buffer);
+        LOGI("Input buffer freed");
+    }
     LOGI("DestroyAniInfo completed");
 }
 

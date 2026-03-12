@@ -13,7 +13,7 @@ import org.crazyromteam.qmgstore.R
 import org.crazyromteam.qmgstore.api.ThemeItem
 import org.crazyromteam.qmgstore.api.RetrofitClient
 
-class ThemeAdapter :
+class ThemeAdapter(private val onItemClick: (ThemeItem) -> Unit) :
     ListAdapter<ThemeItem, ThemeAdapter.ThemeViewHolder>(ThemeDiffCallback()) {
 
     class ThemeViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -40,6 +40,10 @@ class ThemeAdapter :
             .load(RetrofitClient.BASE_URL + "themes/" + theme.id + "/preview.png")
             .centerCrop()
             .into(holder.previewImage)
+
+        holder.itemView.setOnClickListener {
+            onItemClick(theme)
+        }
     }
 
     fun updateData(newThemes: List<ThemeItem>) {
@@ -49,8 +53,7 @@ class ThemeAdapter :
 
 class ThemeDiffCallback : DiffUtil.ItemCallback<ThemeItem>() {
     override fun areItemsTheSame(oldItem: ThemeItem, newItem: ThemeItem): Boolean {
-        // Use name and creator to uniquely identify an item, as there is no specific ID field
-        return oldItem.name == newItem.name && oldItem.creator == newItem.creator
+        return oldItem.id == newItem.id
     }
 
     override fun areContentsTheSame(oldItem: ThemeItem, newItem: ThemeItem): Boolean {

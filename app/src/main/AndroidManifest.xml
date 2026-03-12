@@ -39,6 +39,11 @@
                     android:pathPattern=".*.qmg" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="ThemeDetailActivity"
+            android:exported="true"
+            tools:ignore="AppLinkUrlError" />
+
     </application>
 
 </manifest>

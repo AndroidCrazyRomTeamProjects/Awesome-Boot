@@ -1,3 +1,6 @@
 ## 2026-03-12 - Empty State Improvements and Accessibility Headings
 **Learning:** Using native Android drawables (`@android:drawable/ic_dialog_alert`) combined with semantic tint attributes (`?android:attr/textColorSecondary`) is an effective way to improve empty/error states without adding new assets, while maintaining light/dark theme compatibility. Adding `android:contentDescription="@null"` is crucial for marking these as decorative for screen readers. Furthermore, adding `android:accessibilityHeading="true"` to section titles (like 'Recent Themes') helps screen reader users quickly navigate lists.
 **Action:** Use native drawables and theme attributes for simple empty states where appropriate to keep app size down. Always mark decorative images with `@null` content description and ensure section headings are explicitly marked as accessibility headings.
+## 2026-03-13 - Adding standard Back Navigation
+**Learning:** The application lacked an explicit back mechanism on detail views, relying entirely on the system back button. This can reduce intuitive discoverability for users expecting a visible "up/back" action bar in a detail screen.
+**Action:** Applied standard `androidx.appcompat.widget.Toolbar` with `setDisplayHomeAsUpEnabled(true)` to provide a consistent and predictable navigation anchor in detail layouts.

@@ -42,6 +42,7 @@
         <activity
             android:name="ThemeDetailActivity"
             android:exported="true"
+            android:parentActivityName=".MainActivity"
             tools:ignore="AppLinkUrlError" />
 
     </application>

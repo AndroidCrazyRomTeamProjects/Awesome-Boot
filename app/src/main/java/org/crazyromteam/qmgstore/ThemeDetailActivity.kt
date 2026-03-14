@@ -13,6 +13,7 @@ class ThemeDetailActivity : AppCompatActivity() {
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.title = getString(R.string.title_theme_details)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

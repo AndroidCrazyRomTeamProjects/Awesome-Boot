@@ -4,3 +4,6 @@
 ## 2026-03-13 - Adding standard Back Navigation
 **Learning:** The application lacked an explicit back mechanism on detail views, relying entirely on the system back button. This can reduce intuitive discoverability for users expecting a visible "up/back" action bar in a detail screen.
 **Action:** Applied standard `androidx.appcompat.widget.Toolbar` with `setDisplayHomeAsUpEnabled(true)` to provide a consistent and predictable navigation anchor in detail layouts.
+## 2024-05-24 - Layout Cleanups with ViewBinding
+**Learning:** The application uses ViewBinding (e.g., `FragmentHomeBinding`). When removing unused views with IDs (like the dummy `@+id/text_dashboard`) from XML layouts to reclaim UI space, it generates a high risk of breaking compilation or causing runtime crashes if the Fragment's Kotlin code still references that view binding property.
+**Action:** Always verify that a layout view's ID is not referenced in the corresponding Kotlin Activity/Fragment code before deleting it, even if the view appears to be unused visually.

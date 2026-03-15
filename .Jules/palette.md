@@ -7,3 +7,6 @@
 ## 2024-05-24 - Layout Cleanups with ViewBinding
 **Learning:** The application uses ViewBinding (e.g., `FragmentHomeBinding`). When removing unused views with IDs (like the dummy `@+id/text_dashboard`) from XML layouts to reclaim UI space, it generates a high risk of breaking compilation or causing runtime crashes if the Fragment's Kotlin code still references that view binding property.
 **Action:** Always verify that a layout view's ID is not referenced in the corresponding Kotlin Activity/Fragment code before deleting it, even if the view appears to be unused visually.
+## 2024-03-24 - Live Regions for Error States
+**Learning:** Error states that appear dynamically (like network failures replacing a list) are often missed by screen reader users unless focus is explicitly moved to them.
+**Action:** Added `android:accessibilityLiveRegion="polite"` to the error container to ensure screen readers announce the error message automatically when it appears.

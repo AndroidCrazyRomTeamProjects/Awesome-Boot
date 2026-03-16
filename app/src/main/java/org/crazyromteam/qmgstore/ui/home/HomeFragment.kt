@@ -46,6 +46,11 @@ class HomeFragment : Fragment() {
                 themeAdapter.updateData(themes)
                 binding.themesRecyclerView.visibility = View.VISIBLE
                 binding.errorContainer.visibility = View.GONE
+                binding.emptyStateTextView.visibility = View.GONE
+            } else if (homeViewModel.isLoading.value == false && homeViewModel.error.value.isNullOrEmpty()) {
+                binding.themesRecyclerView.visibility = View.GONE
+                binding.errorContainer.visibility = View.GONE
+                binding.emptyStateTextView.visibility = View.VISIBLE
             }
         }
 
@@ -53,6 +58,10 @@ class HomeFragment : Fragment() {
             binding.loadingProgressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
             if (isLoading) {
                 binding.errorContainer.visibility = View.GONE
+                binding.emptyStateTextView.visibility = View.GONE
+            } else if (homeViewModel.themes.value.isNullOrEmpty() && homeViewModel.error.value.isNullOrEmpty()) {
+                binding.emptyStateTextView.visibility = View.VISIBLE
+                binding.themesRecyclerView.visibility = View.GONE
             }
         }
 
@@ -61,6 +70,7 @@ class HomeFragment : Fragment() {
                 binding.errorContainer.visibility = View.VISIBLE
                 binding.errorTextView.text = getString(R.string.error_loading_themes, errorMessage)
                 binding.themesRecyclerView.visibility = View.GONE
+                binding.emptyStateTextView.visibility = View.GONE
             } else {
                 binding.errorContainer.visibility = View.GONE
             }

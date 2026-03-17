@@ -44,6 +44,34 @@
             android:contentDescription="@string/loading_themes" />
 
         <LinearLayout
+            android:id="@+id/emptyContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:visibility="gone"
+            android:accessibilityLiveRegion="polite">
+
+            <ImageView
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_marginBottom="16dp"
+                android:src="@android:drawable/ic_menu_info_details"
+                app:tint="?android:attr/textColorSecondary"
+                android:contentDescription="@null" />
+
+            <TextView
+                android:id="@+id/emptyTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/no_themes_found"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/errorContainer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

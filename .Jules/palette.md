@@ -10,3 +10,7 @@
 ## 2024-03-24 - Live Regions for Error States
 **Learning:** Error states that appear dynamically (like network failures replacing a list) are often missed by screen reader users unless focus is explicitly moved to them.
 **Action:** Added `android:accessibilityLiveRegion="polite"` to the error container to ensure screen readers announce the error message automatically when it appears.
+
+## 2025-02-27 - Explicit Empty States for Lists
+**Learning:** When a list view (like `themesRecyclerView`) is empty, simply hiding it can lead to a confusing blank screen. Providing an explicit empty state with an icon and clear message (e.g., "No themes found") improves user understanding and confidence that the app is functioning correctly, even when there's no data. Using `android:accessibilityLiveRegion="polite"` on the empty state container ensures screen readers announce its appearance.
+**Action:** Always implement explicit empty states for list views, manually toggling them visible when the data list is empty and loading/error states are false. Use native Android drawables and semantic theme attributes for the empty state UI, and ensure accessibility live regions are used for screen reader announcements.

@@ -11,4 +11,5 @@
     <string name="recent_themes">Recent Themes</string>
     <string name="loading_themes">Loading themes</string>
     <string name="download">Download</string>
+    <string name="no_themes_found">No themes found</string>
 </resources>

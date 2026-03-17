@@ -41,29 +41,47 @@ class HomeFragment : Fragment() {
             homeViewModel.fetchThemes()
         }
 
-        homeViewModel.themes.observe(viewLifecycleOwner) { themes ->
-            if (!themes.isNullOrEmpty()) {
-                themeAdapter.updateData(themes)
-                binding.themesRecyclerView.visibility = View.VISIBLE
-                binding.errorContainer.visibility = View.GONE
-            }
-        }
+        fun updateUIState() {
+            val isLoading = homeViewModel.isLoading.value == true
+            val error = homeViewModel.error.value
+            val themes = homeViewModel.themes.value
 
-        homeViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding.loadingProgressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
-            if (isLoading) {
-                binding.errorContainer.visibility = View.GONE
-            }
-        }
 
-        homeViewModel.error.observe(viewLifecycleOwner) { errorMessage ->
-            if (!errorMessage.isNullOrEmpty()) {
+            if (!error.isNullOrEmpty()) {
                 binding.errorContainer.visibility = View.VISIBLE
-                binding.errorTextView.text = getString(R.string.error_loading_themes, errorMessage)
+                binding.errorTextView.text = getString(R.string.error_loading_themes, error)
                 binding.themesRecyclerView.visibility = View.GONE
+                binding.emptyContainer.visibility = View.GONE
             } else {
                 binding.errorContainer.visibility = View.GONE
+
+                if (!isLoading) {
+                    if (themes.isNullOrEmpty()) {
+                        binding.emptyContainer.visibility = View.VISIBLE
+                        binding.themesRecyclerView.visibility = View.GONE
+                    } else {
+                        binding.emptyContainer.visibility = View.GONE
+                        binding.themesRecyclerView.visibility = View.VISIBLE
+                    }
+                } else {
+                    binding.emptyContainer.visibility = View.GONE
+                    binding.themesRecyclerView.visibility = View.GONE
+                }
             }
+        }
+
+        homeViewModel.themes.observe(viewLifecycleOwner) { themes ->
+            themes?.let { themeAdapter.updateData(it) }
+            updateUIState()
+        }
+
+        homeViewModel.isLoading.observe(viewLifecycleOwner) {
+            updateUIState()
+        }
+
+        homeViewModel.error.observe(viewLifecycleOwner) {
+            updateUIState()
         }
     }
 

@@ -10,3 +10,6 @@
 ## 2024-03-24 - Live Regions for Error States
 **Learning:** Error states that appear dynamically (like network failures replacing a list) are often missed by screen reader users unless focus is explicitly moved to them.
 **Action:** Added `android:accessibilityLiveRegion="polite"` to the error container to ensure screen readers announce the error message automatically when it appears.
+## 2026-03-16 - Adding explicit Empty States for RecyclerView
+**Learning:** When loading lists dynamically with ViewBinding, missing an explicit empty state leaves a confusing blank UI. Adding a simple TextView hidden by default and explicitly setting its visibility during empty lists provides much better feedback.
+**Action:** Always add an empty state TextView or layout parallel to RecyclerViews in lists, and manually trigger its visibility when the data source is empty and no loading or error conditions apply.

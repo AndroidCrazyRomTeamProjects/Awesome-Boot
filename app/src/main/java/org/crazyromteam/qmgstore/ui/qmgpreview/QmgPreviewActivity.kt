@@ -34,7 +34,7 @@ class QmgPreviewActivity : AppCompatActivity(), SurfaceHolder.Callback {
             }
         } else {
             val qmgPath = intent.getStringExtra("qmgPath")
-            if (qmgPath != null) {
+            if (qmgPath != null && systemUtils.isValidSystemPath(qmgPath)) {
                 lifecycleScope.launch {
                     qmgData = systemUtils.readSystemFile(qmgPath)
                     checkAndStartQmg()

@@ -31,4 +31,27 @@ class SystemUtilsTest {
 
         assertArrayEquals(ByteArray(0), result)
     }
+
+    @Test
+    fun testIsValidSystemPath(): Unit = runBlocking {
+        val systemUtils = SystemUtils()
+
+        // Valid path
+        assert(systemUtils.isValidSystemPath("/system/media/test.qmg"))
+
+        // Invalid extension
+        assert(!systemUtils.isValidSystemPath("/system/media/test.txt"))
+
+        // Invalid directory
+        assert(!systemUtils.isValidSystemPath("/data/local/tmp/test.qmg"))
+
+        // Path traversal attempt
+        assert(!systemUtils.isValidSystemPath("/system/media/../../etc/passwd.qmg"))
+
+        // Another traversal attempt
+        assert(!systemUtils.isValidSystemPath("/system/media/subdir/../../../etc/passwd.qmg"))
+
+        // Null-byte injection or similar (if handled by File)
+        assert(!systemUtils.isValidSystemPath("/system/media/test.qmg\u0000.txt"))
+    }
 }

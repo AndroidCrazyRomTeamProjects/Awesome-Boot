@@ -42,12 +42,22 @@ class ThemeDetailActivity : AppCompatActivity() {
     private fun checkAndSetupPreviews(themeId: String) {
         lifecycleScope.launch {
             try {
-                val bootFile = when {
-                    isFileAvailable(themeId, "bootsamsung.qmg") -> "bootsamsung.qmg"
-                    isFileAvailable(themeId, "bootsamsungloop.qmg") -> "bootsamsungloop.qmg"
-                    else -> null
+                val (bootFile, shutdownFile) = coroutineScope {
+                    // Fetch boot and shutdown availability concurrently to minimize network latency
+                    // while preserving short-circuit evaluation for the alternative boot animation.
+                    val bootDeferred = async {
+                        when {
+                            isFileAvailable(themeId, "bootsamsung.qmg") -> "bootsamsung.qmg"
+                            isFileAvailable(themeId, "bootsamsungloop.qmg") -> "bootsamsungloop.qmg"
+                            else -> null
+                        }
+                    }
+                    val shutdownDeferred = async {
+                        if (isFileAvailable(themeId, "shutdown.qmg")) "shutdown.qmg" else null
+                    }
+
+                    Pair(bootDeferred.await(), shutdownDeferred.await())
                 }
-                val shutdownFile = if (isFileAvailable(themeId, "shutdown.qmg")) "shutdown.qmg" else null
 
                 if (bootFile != null) {
                     binding.bootPreviewCard.visibility = View.VISIBLE

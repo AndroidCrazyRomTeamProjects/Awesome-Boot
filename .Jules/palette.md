@@ -13,3 +13,6 @@
 ## 2026-03-16 - Adding explicit Empty States for RecyclerView
 **Learning:** When loading lists dynamically with ViewBinding, missing an explicit empty state leaves a confusing blank UI. Adding a simple TextView hidden by default and explicitly setting its visibility during empty lists provides much better feedback.
 **Action:** Always add an empty state TextView or layout parallel to RecyclerViews in lists, and manually trigger its visibility when the data source is empty and no loading or error conditions apply.
+## 2024-05-24 - Interactive Card View Focus States
+**Learning:** By default, simple container views like `CardView` used for complex, clickable UI elements (like preview thumbnails) don't automatically provide the visual feedback or keyboard focus support expected by users, especially those using external keyboards, D-pads, or accessibility switches. Simply wrapping elements in an onClickListener without setting the correct layout attributes leads to a poor interaction experience.
+**Action:** Always add `android:clickable="true"`, `android:focusable="true"`, and `android:foreground="?attr/selectableItemBackground"` to CardViews (or similar containers) that act as interactive touch targets to ensure proper visual ripple feedback and clear keyboard focus indicators.

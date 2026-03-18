@@ -1,0 +1,3 @@
+## 2024-03-22 - Replacing GET with HEAD for API Exists Checks
+**Learning:** Using a GET request to check if a file exists (especially a media file like .qmg) fetches the entire file body. For large files, this is a massive performance bottleneck and wastes bandwidth. Replacing it with a HEAD request allows the application to check the HTTP status code (200 OK or 404 Not Found) without downloading the file body, significantly speeding up file existence checks and saving bandwidth.
+**Action:** When creating methods to verify the existence of a remote resource using Retrofit, always use `@HEAD` instead of `@GET`.

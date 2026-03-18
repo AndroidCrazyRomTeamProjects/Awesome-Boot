@@ -10,7 +10,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.crazyromteam.qmgstore.R
+import org.crazyromteam.qmgstore.api.RetrofitClient
 import org.crazyromteam.qmgstore.qmg.utils.QmgHeader
 import org.crazyromteam.qmgstore.qmg.utils.SystemUtils
 
@@ -48,6 +51,29 @@ class QmgPreviewActivity : AppCompatActivity(), SurfaceHolder.Callback {
             loopData = intent.getByteArrayExtra("loop_data")
         } else if (intent.hasExtra("qmg_data")) {
             qmgData = intent.getByteArrayExtra("qmg_data")
+        } else if (intent.hasExtra("theme_id") && intent.hasExtra("file_name")) {
+            val themeId = intent.getStringExtra("theme_id")!!
+            val fileName = intent.getStringExtra("file_name")!!
+            lifecycleScope.launch(Dispatchers.IO) {
+                try {
+                    val response = RetrofitClient.apiService.downloadFile(themeId, fileName)
+                    if (response.isSuccessful) {
+                        qmgData = response.body()?.bytes()
+                        withContext(Dispatchers.Main) {
+                            checkAndStartQmg()
+                        }
+                    } else {
+                        withContext(Dispatchers.Main) {
+                            finish()
+                        }
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    withContext(Dispatchers.Main) {
+                        finish()
+                    }
+                }
+            }
         } else {
             val qmgPath = intent.getStringExtra("qmgPath")
             if (qmgPath != null) {

@@ -22,4 +22,12 @@ interface ApiService {
         @Path("id") id: String,
         @Path("file") file: String
     ): Response<ResponseBody>
+
+    @Streaming
+    @GET("themes/{id}/{file}")
+    suspend fun downloadFileRange(
+        @retrofit2.http.Header("Range") range: String,
+        @Path("id") id: String,
+        @Path("file") file: String
+    ): Response<ResponseBody>
 }

@@ -75,7 +75,8 @@ class ThemeDetailActivity : AppCompatActivity() {
     private fun loadFirstFrame(themeId: String, fileName: String, onBitmapReady: (Bitmap) -> Unit) {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                val response = RetrofitClient.apiService.downloadFile(themeId, fileName)
+                // Request only the first 256KB to quickly decode the first frame
+                val response = RetrofitClient.apiService.downloadFileRange("bytes=0-262143", themeId, fileName)
                 if (response.isSuccessful) {
                     val bytes = response.body()?.bytes() ?: return@launch
                     val bitmap = QmgPreviewExtractor.getFirstFrame(bytes)
@@ -93,19 +94,10 @@ class ThemeDetailActivity : AppCompatActivity() {
     }
 
     private fun startFullscreenPreview(themeId: String, fileName: String) {
-        lifecycleScope.launch(Dispatchers.IO) {
-            try {
-                val response = RetrofitClient.apiService.downloadFile(themeId, fileName)
-                if (response.isSuccessful) {
-                    val bytes = response.body()?.bytes() ?: return@launch
-                    val intent = Intent(this@ThemeDetailActivity, QmgPreviewActivity::class.java)
-                    intent.putExtra("qmg_data", bytes)
-                    startActivity(intent)
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
+        val intent = Intent(this@ThemeDetailActivity, QmgPreviewActivity::class.java)
+        intent.putExtra("theme_id", themeId)
+        intent.putExtra("file_name", fileName)
+        startActivity(intent)
     }
 
     private suspend fun isFileAvailable(themeId: String, fileName: String): Boolean {

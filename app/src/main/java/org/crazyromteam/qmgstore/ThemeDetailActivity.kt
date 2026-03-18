@@ -42,38 +42,53 @@ class ThemeDetailActivity : AppCompatActivity() {
     private fun checkAndSetupPreviews(themeId: String) {
         lifecycleScope.launch {
             try {
-                val bootFile = when {
-                    isFileAvailable(themeId, "bootsamsung.qmg") -> "bootsamsung.qmg"
-                    isFileAvailable(themeId, "bootsamsungloop.qmg") -> "bootsamsungloop.qmg"
-                    else -> null
-                }
-                val shutdownFile = if (isFileAvailable(themeId, "shutdown.qmg")) "shutdown.qmg" else null
+                coroutineScope {
+                    // ⚡ Bolt Optimization: Fetch the required files concurrently to reduce latency.
+                    // Instead of waiting for `bootsamsung.qmg` to fail before checking `bootsamsungloop.qmg`,
+                    // we request both simultaneously and prioritize `bootsamsung.qmg` if both exist.
+                    // This uses slightly more bandwidth in the best case, but significantly reduces
+                    // loading time in the fallback case.
+                    val bootSamsungDeferred = async { isFileAvailable(themeId, "bootsamsung.qmg") }
+                    val bootSamsungLoopDeferred = async { isFileAvailable(themeId, "bootsamsungloop.qmg") }
+                    val shutdownDeferred = async { isFileAvailable(themeId, "shutdown.qmg") }
 
-                if (bootFile != null) {
-                    binding.bootPreviewCard.visibility = View.VISIBLE
-                    binding.bootPreviewProgress.visibility = View.VISIBLE
-                    binding.bootPlayIcon.visibility = View.GONE
-                    loadFirstFrame(themeId, bootFile) { bitmap ->
-                        binding.bootPreviewImage.setImageBitmap(bitmap)
-                        binding.bootPreviewProgress.visibility = View.GONE
-                        binding.bootPlayIcon.visibility = View.VISIBLE
-                    }
-                    binding.bootPreviewCard.setOnClickListener {
-                        startFullscreenPreview(themeId, bootFile)
-                    }
-                }
+                    val bootSamsung = bootSamsungDeferred.await()
+                    val bootSamsungLoop = bootSamsungLoopDeferred.await()
+                    val shutdown = shutdownDeferred.await()
 
-                if (shutdownFile != null) {
-                    binding.shutdownPreviewCard.visibility = View.VISIBLE
-                    binding.shutdownPreviewProgress.visibility = View.VISIBLE
-                    binding.shutdownPlayIcon.visibility = View.GONE
-                    loadFirstFrame(themeId, shutdownFile) { bitmap ->
-                        binding.shutdownPreviewImage.setImageBitmap(bitmap)
-                        binding.shutdownPreviewProgress.visibility = View.GONE
-                        binding.shutdownPlayIcon.visibility = View.VISIBLE
+                    val bootFile = when {
+                        bootSamsung -> "bootsamsung.qmg"
+                        bootSamsungLoop -> "bootsamsungloop.qmg"
+                        else -> null
                     }
-                    binding.shutdownPreviewCard.setOnClickListener {
-                        startFullscreenPreview(themeId, shutdownFile)
+                    val shutdownFile = if (shutdown) "shutdown.qmg" else null
+
+                    if (bootFile != null) {
+                        binding.bootPreviewCard.visibility = View.VISIBLE
+                        binding.bootPreviewProgress.visibility = View.VISIBLE
+                        binding.bootPlayIcon.visibility = View.GONE
+                        loadFirstFrame(themeId, bootFile) { bitmap ->
+                            binding.bootPreviewImage.setImageBitmap(bitmap)
+                            binding.bootPreviewProgress.visibility = View.GONE
+                            binding.bootPlayIcon.visibility = View.VISIBLE
+                        }
+                        binding.bootPreviewCard.setOnClickListener {
+                            startFullscreenPreview(themeId, bootFile)
+                        }
+                    }
+
+                    if (shutdownFile != null) {
+                        binding.shutdownPreviewCard.visibility = View.VISIBLE
+                        binding.shutdownPreviewProgress.visibility = View.VISIBLE
+                        binding.shutdownPlayIcon.visibility = View.GONE
+                        loadFirstFrame(themeId, shutdownFile) { bitmap ->
+                            binding.shutdownPreviewImage.setImageBitmap(bitmap)
+                            binding.shutdownPreviewProgress.visibility = View.GONE
+                            binding.shutdownPlayIcon.visibility = View.VISIBLE
+                        }
+                        binding.shutdownPreviewCard.setOnClickListener {
+                            startFullscreenPreview(themeId, shutdownFile)
+                        }
                     }
                 }
             } catch (e: Exception) {

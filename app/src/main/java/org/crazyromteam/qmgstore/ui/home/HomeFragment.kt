@@ -30,8 +30,15 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         
         val homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+        
+        val themeAdapter = ThemeAdapter { theme ->
+            val intent = Intent(activity, ThemeDetailActivity::class.java)
+            intent.putExtra("themeid", theme.id)
+            intent.putExtra("themename", theme.name)
+            intent.putExtra("themecreator", theme.creator)
+            startActivity(intent)
+        }
 
-        val themeAdapter = ThemeAdapter({ startActivity(Intent(activity, ThemeDetailActivity::class.java)) })
         binding.themesRecyclerView.apply {
             layoutManager = GridLayoutManager(context, 3)
             adapter = themeAdapter

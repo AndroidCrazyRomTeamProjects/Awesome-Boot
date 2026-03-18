@@ -4,7 +4,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
-    const val BASE_URL = "https://qmgstore.nefalchat.com/api/" // Replace with actual URL if known
+    const val BASE_URL = "https://qmgstore.nefalchat.com/" // Replace with actual URL if known
 
     val apiService: ApiService by lazy {
         Retrofit.Builder()

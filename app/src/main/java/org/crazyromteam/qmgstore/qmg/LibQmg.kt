@@ -20,8 +20,9 @@ object LibQmg {
      *
      * @param aniPtr A pointer to the animation info structure.
      * @param outBuf A pre-allocated buffer to store the decoded frame data.
+     * @return The status or number of remaining frames.
      */
-    external fun DecodeAniFrame(aniPtr: Long, outBuf: ByteArray)
+    external fun DecodeAniFrame(aniPtr: Long, outBuf: ByteArray): Int
 
     /**
      * Destroys the animation info structure and releases its resources.

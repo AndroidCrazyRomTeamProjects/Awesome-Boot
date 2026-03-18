@@ -6,6 +6,7 @@ import android.view.Surface
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.view.View
+import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -43,14 +44,21 @@ class QmgPreviewActivity : AppCompatActivity(), SurfaceHolder.Callback {
         }
 
         if (intent?.action == Intent.ACTION_VIEW && intent.data != null) {
-            contentResolver.openInputStream(intent.data!!)?.use {
-                qmgData = it.readBytes()
+            lifecycleScope.launch(Dispatchers.IO) {
+                contentResolver.openInputStream(intent.data!!)?.use {
+                    qmgData = it.readBytes()
+                }
+                withContext(Dispatchers.Main) {
+                    checkAndStartQmg()
+                }
             }
         } else if (intent.hasExtra("intro_data") || intent.hasExtra("loop_data")) {
             introData = intent.getByteArrayExtra("intro_data")
             loopData = intent.getByteArrayExtra("loop_data")
+            checkAndStartQmg()
         } else if (intent.hasExtra("qmg_data")) {
             qmgData = intent.getByteArrayExtra("qmg_data")
+            checkAndStartQmg()
         } else if (intent.hasExtra("theme_id") && intent.hasExtra("file_name")) {
             val themeId = intent.getStringExtra("theme_id")!!
             val fileName = intent.getStringExtra("file_name")!!
@@ -88,11 +96,14 @@ class QmgPreviewActivity : AppCompatActivity(), SurfaceHolder.Callback {
     private fun checkAndStartQmg() {
         val surface = currentSurface ?: return
         
+        var started = false
         if (introData != null || loopData != null) {
             vm.startBootAnimation(surface, introData ?: byteArrayOf(), loopData ?: byteArrayOf())
+            started = true
         } else if (intent.getBooleanExtra("bootanimation", false)) {
             val bootAnimationPreview = BootAnimationPreview(surface, vm, lifecycleScope)
             bootAnimationPreview.playAnimation()
+            started = true
         } else {
             qmgData?.let {
                 if (it.isNotEmpty()) {
@@ -103,9 +114,14 @@ class QmgPreviewActivity : AppCompatActivity(), SurfaceHolder.Callback {
                             header.repeat,
                             surface
                         )
+                        started = true
                     }
                 }
             }
+        }
+
+        if (started) {
+            findViewById<ProgressBar>(R.id.qmg_loading_progress).visibility = View.GONE
         }
     }
 

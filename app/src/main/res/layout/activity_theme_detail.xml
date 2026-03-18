@@ -28,16 +28,6 @@
             android:layout_height="wrap_content"
             android:padding="16dp">
 
-            <ProgressBar
-                android:id="@+id/previewProgressBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="@id/previewContainer"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
-
             <LinearLayout
                 android:id="@+id/previewContainer"
                 android:layout_width="match_parent"
@@ -59,6 +49,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
 
+                        <ProgressBar
+                            android:id="@+id/bootPreviewProgress"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center" />
+
                         <ImageView
                             android:id="@+id/bootPreviewImage"
                             android:layout_width="wrap_content"
@@ -68,12 +64,14 @@
                             android:contentDescription="@string/preview_qmg_bootanimation" />
 
                         <ImageView
+                            android:id="@+id/bootPlayIcon"
                             android:layout_width="48dp"
                             android:layout_height="48dp"
                             android:layout_gravity="center"
                             android:src="@drawable/ic_oui_control_play"
                             app:tint="@android:color/white"
                             android:alpha="0.8"
+                            android:visibility="gone"
                             android:contentDescription="@null" />
                     </FrameLayout>
                 </androidx.cardview.widget.CardView>
@@ -91,6 +89,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
 
+                        <ProgressBar
+                            android:id="@+id/shutdownPreviewProgress"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center" />
+
                         <ImageView
                             android:id="@+id/shutdownPreviewImage"
                             android:layout_width="wrap_content"
@@ -100,12 +104,14 @@
                             android:contentDescription="@string/preview_qmg_shutdownanimation" />
 
                         <ImageView
+                            android:id="@+id/shutdownPlayIcon"
                             android:layout_width="48dp"
                             android:layout_height="48dp"
                             android:layout_gravity="center"
                             android:src="@drawable/ic_oui_control_play"
                             app:tint="@android:color/white"
                             android:alpha="0.8"
+                            android:visibility="gone"
                             android:contentDescription="@null" />
                     </FrameLayout>
                 </androidx.cardview.widget.CardView>

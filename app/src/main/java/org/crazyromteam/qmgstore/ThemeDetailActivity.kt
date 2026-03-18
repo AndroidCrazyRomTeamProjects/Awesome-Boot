@@ -51,8 +51,12 @@ class ThemeDetailActivity : AppCompatActivity() {
 
                 if (bootFile != null) {
                     binding.bootPreviewCard.visibility = View.VISIBLE
+                    binding.bootPreviewProgress.visibility = View.VISIBLE
+                    binding.bootPlayIcon.visibility = View.GONE
                     loadFirstFrame(themeId, bootFile) { bitmap ->
                         binding.bootPreviewImage.setImageBitmap(bitmap)
+                        binding.bootPreviewProgress.visibility = View.GONE
+                        binding.bootPlayIcon.visibility = View.VISIBLE
                     }
                     binding.bootPreviewCard.setOnClickListener {
                         startFullscreenPreview(themeId, bootFile)
@@ -61,8 +65,12 @@ class ThemeDetailActivity : AppCompatActivity() {
 
                 if (shutdownFile != null) {
                     binding.shutdownPreviewCard.visibility = View.VISIBLE
+                    binding.shutdownPreviewProgress.visibility = View.VISIBLE
+                    binding.shutdownPlayIcon.visibility = View.GONE
                     loadFirstFrame(themeId, shutdownFile) { bitmap ->
                         binding.shutdownPreviewImage.setImageBitmap(bitmap)
+                        binding.shutdownPreviewProgress.visibility = View.GONE
+                        binding.shutdownPlayIcon.visibility = View.VISIBLE
                     }
                     binding.shutdownPreviewCard.setOnClickListener {
                         startFullscreenPreview(themeId, shutdownFile)

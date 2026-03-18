@@ -1,23 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ThemeDetailActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary">
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:titleTextColor="?android:attr/textColorPrimaryInverse"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:titleTextColor="?android:attr/textColorPrimaryInverse" />
-
-    </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -28,6 +26,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="16dp">
+
+            <ProgressBar
+                android:id="@+id/previewProgressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/previewContainer"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
 
             <LinearLayout
                 android:id="@+id/previewContainer"
@@ -54,10 +62,10 @@
                         <ImageView
                             android:id="@+id/bootPreviewImage"
                             android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            app:layout_constraintDimensionRatio="H,9:21"
-                            android:scaleType="centerCrop"
+                            android:layout_height="wrap_content"
                             android:adjustViewBounds="true"
+                            android:scaleType="fitCenter"
+                            android:minHeight="200dp"
                             android:contentDescription="@string/preview_qmg_bootanimation" />
 
                         <ImageView
@@ -88,10 +96,10 @@
                         <ImageView
                             android:id="@+id/shutdownPreviewImage"
                             android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            app:layout_constraintDimensionRatio="H,9:21"
-                            android:scaleType="centerCrop"
+                            android:layout_height="wrap_content"
                             android:adjustViewBounds="true"
+                            android:scaleType="fitCenter"
+                            android:minHeight="200dp"
                             android:contentDescription="@string/preview_qmg_shutdownanimation" />
 
                         <ImageView
@@ -137,17 +145,7 @@
                 android:text="@string/download"
                 app:layout_constraintTop_toBottomOf="@id/detailCreator" />
 
-            <ProgressBar
-                android:id="@+id/previewProgressBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

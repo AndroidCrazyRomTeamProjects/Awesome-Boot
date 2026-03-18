@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import androidx.appcompat.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.*
@@ -21,13 +22,14 @@ class ThemeDetailActivity : AppCompatActivity() {
         binding = ActivityThemeDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         val themeId = intent.getStringExtra("themeid")
         val themeName = intent.getStringExtra("themename")
         val themeCreator = intent.getStringExtra("themecreator")
 
-        setSupportActionBar(binding.toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = getString(R.string.title_theme_details)
 
         binding.detailName.text = themeName
         binding.detailCreator.text = themeCreator

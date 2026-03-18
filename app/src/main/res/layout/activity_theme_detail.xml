@@ -20,6 +20,7 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -42,30 +43,28 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="center_horizontal"
+                android:gravity="center"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/bootPreviewCard"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_margin="8dp"
+                    android:layout_margin="4dp"
                     app:cardCornerRadius="12dp"
                     app:cardElevation="4dp"
                     android:visibility="gone">
 
                     <FrameLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
 
                         <ImageView
                             android:id="@+id/bootPreviewImage"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:layout_height="220dp"
                             android:adjustViewBounds="true"
                             android:scaleType="fitCenter"
-                            android:minHeight="200dp"
                             android:contentDescription="@string/preview_qmg_bootanimation" />
 
                         <ImageView
@@ -81,25 +80,23 @@
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/shutdownPreviewCard"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_margin="8dp"
+                    android:layout_margin="4dp"
                     app:cardCornerRadius="12dp"
                     app:cardElevation="4dp"
                     android:visibility="gone">
 
                     <FrameLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
 
                         <ImageView
                             android:id="@+id/shutdownPreviewImage"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:layout_height="220dp"
                             android:adjustViewBounds="true"
                             android:scaleType="fitCenter"
-                            android:minHeight="200dp"
                             android:contentDescription="@string/preview_qmg_shutdownanimation" />
 
                         <ImageView

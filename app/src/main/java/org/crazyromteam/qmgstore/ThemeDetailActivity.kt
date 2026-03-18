@@ -41,6 +41,7 @@ class ThemeDetailActivity : AppCompatActivity() {
 
     private fun checkAndSetupPreviews(themeId: String) {
         lifecycleScope.launch {
+            binding.previewProgressBar.visibility = View.VISIBLE
             try {
                 val bootFile = when {
                     isFileAvailable(themeId, "bootsamsung.qmg") -> "bootsamsung.qmg"
@@ -70,6 +71,8 @@ class ThemeDetailActivity : AppCompatActivity() {
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
+            } finally {
+                binding.previewProgressBar.visibility = View.GONE
             }
         }
     }

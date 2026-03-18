@@ -12,4 +12,5 @@
     <string name="loading_themes">Loading themes</string>
     <string name="download">Download</string>
     <string name="no_themes_found">No themes found</string>
+    <string name="loading_previews">Loading previews</string>
 </resources>

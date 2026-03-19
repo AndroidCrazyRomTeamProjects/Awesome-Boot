@@ -52,7 +52,8 @@
             android:text="@string/no_themes_found"
             android:textSize="16sp"
             android:textColor="?android:attr/textColorSecondary"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:accessibilityLiveRegion="polite" />
 
         <LinearLayout
             android:id="@+id/errorContainer"

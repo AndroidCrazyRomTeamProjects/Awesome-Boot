@@ -16,3 +16,6 @@
 ## 2024-05-24 - Interactive Card View Focus States
 **Learning:** By default, simple container views like `CardView` used for complex, clickable UI elements (like preview thumbnails) don't automatically provide the visual feedback or keyboard focus support expected by users, especially those using external keyboards, D-pads, or accessibility switches. Simply wrapping elements in an onClickListener without setting the correct layout attributes leads to a poor interaction experience.
 **Action:** Always add `android:clickable="true"`, `android:focusable="true"`, and `android:foreground="?attr/selectableItemBackground"` to CardViews (or similar containers) that act as interactive touch targets to ensure proper visual ripple feedback and clear keyboard focus indicators.
+## 2026-03-19 - Accessibility Live Regions for Empty States
+**Learning:** While error messages dynamically announced themselves to screen readers, normal empty states (like "No themes found" appearing after a search or load) were completely silent. Users relying on screen readers wouldn't know the list had updated to be empty without manually exploring the screen.
+**Action:** Always add `android:accessibilityLiveRegion="polite"` to dynamically appearing empty state `TextView`s (just like error containers) so screen readers automatically announce when a list becomes empty.

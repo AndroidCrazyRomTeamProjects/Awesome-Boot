@@ -2,6 +2,7 @@ package org.crazyromteam.qmgstore.qmg
 
 import android.util.Log
 import org.crazyromteam.qmgstore.qmg.utils.Color
+import org.crazyromteam.qmgstore.qmg.utils.rgb565AlphaInterleavedToArgb8888
 import org.crazyromteam.qmgstore.qmg.utils.rgb565ToArgb8888
 import org.crazyromteam.qmgstore.qmg.utils.splitAlpha
 
@@ -14,8 +15,6 @@ class DecodeQmg(
 ) {
     private val outBuf = ByteArray(width * height * 4)
     private val reusableOut = ByteArray(width * height * 4)
-    private var splitAlphaPixels: ByteArray? = null
-    private var splitAlphaValues: ByteArray? = null
     private var aniPtr: Long = 0L
     private var curFrame = 0
 
@@ -71,17 +70,11 @@ class DecodeQmg(
             }
 
             Color.RGB5658 -> {
-                if (splitAlphaPixels == null) splitAlphaPixels = ByteArray(pixelCount * 2)
-                if (splitAlphaValues == null) splitAlphaValues = ByteArray(pixelCount)
-                val (rgb, alpha) = splitAlpha(outBuf, pixelCount, 3, false, splitAlphaPixels, splitAlphaValues)
-                rgb565ToArgb8888(rgb, alpha, reusableOut, pixelCount)
+                rgb565AlphaInterleavedToArgb8888(outBuf, pixelCount, false, reusableOut)
             }
 
             Color.RGB8565 -> {
-                if (splitAlphaPixels == null) splitAlphaPixels = ByteArray(pixelCount * 2)
-                if (splitAlphaValues == null) splitAlphaValues = ByteArray(pixelCount)
-                val (rgb, alpha) = splitAlpha(outBuf, pixelCount, 3, true, splitAlphaPixels, splitAlphaValues)
-                rgb565ToArgb8888(rgb, alpha, reusableOut, pixelCount)
+                rgb565AlphaInterleavedToArgb8888(outBuf, pixelCount, true, reusableOut)
             }
 
             Color.ARGB8888 -> {

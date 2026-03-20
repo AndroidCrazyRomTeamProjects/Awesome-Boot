@@ -88,3 +88,40 @@ fun splitAlpha(
     }
     return pixels to alpha
 }
+
+fun rgb565AlphaInterleavedToArgb8888(
+    data: ByteArray,
+    pixelCount: Int,
+    alphaFirst: Boolean,
+    out: ByteArray? = null
+): ByteArray {
+    val result = out ?: ByteArray(pixelCount * 4)
+    var src = 0
+    var dst = 0
+
+    repeat(pixelCount) {
+        val alpha: Byte
+        val rgbValue: Int
+
+        if (alphaFirst) {
+            alpha = data[src]
+            rgbValue = ((data[src + 2].toInt() and 0xFF) shl 8) or (data[src + 1].toInt() and 0xFF)
+        } else {
+            rgbValue = ((data[src + 1].toInt() and 0xFF) shl 8) or (data[src].toInt() and 0xFF)
+            alpha = data[src + 2]
+        }
+
+        val r = (rgbValue shr 11) and 0x1F
+        val g = (rgbValue shr 5) and 0x3F
+        val b = rgbValue and 0x1F
+
+        result[dst++] = ((r shl 3) or (r shr 2)).toByte()
+        result[dst++] = ((g shl 2) or (g shr 4)).toByte()
+        result[dst++] = ((b shl 3) or (b shr 2)).toByte()
+        result[dst++] = alpha
+
+        src += 3
+    }
+
+    return result
+}

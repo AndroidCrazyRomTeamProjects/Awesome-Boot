@@ -13,4 +13,5 @@
     <string name="loading_themes">Loading themes</string>
     <string name="download">Download</string>
     <string name="no_themes_found">No themes found</string>
+    <string name="qmg_preview_surface_description">Full screen animation preview</string>
 </resources>

@@ -19,3 +19,6 @@
 ## 2026-03-19 - Accessibility Live Regions for Empty States
 **Learning:** While error messages dynamically announced themselves to screen readers, normal empty states (like "No themes found" appearing after a search or load) were completely silent. Users relying on screen readers wouldn't know the list had updated to be empty without manually exploring the screen.
 **Action:** Always add `android:accessibilityLiveRegion="polite"` to dynamically appearing empty state `TextView`s (just like error containers) so screen readers automatically announce when a list becomes empty.
+## 2026-03-20 - Immersive View Accessibility
+**Learning:** When implementing full-screen immersive views (like `SurfaceView` for animation previews) that rely on a tap-to-exit interaction, they often become a "trap" for screen reader users if they lack a `contentDescription`. Screen readers won't announce what the view is, and users won't know they can activate it to exit.
+**Action:** Always provide a clear `contentDescription` (e.g., 'Full screen animation preview') and ensure `android:clickable="true"` and `android:focusable="true"` on the `SurfaceView` so the screen reader can append its standard 'Double tap to activate' instruction and users understand how to escape the view.

@@ -6,7 +6,10 @@
     <SurfaceView
         android:id="@+id/qmg_surface_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:contentDescription="@string/qmg_preview_surface_description"
+        android:focusable="true"
+        android:clickable="true" />
 
     <ProgressBar
         android:id="@+id/qmg_loading_progress"

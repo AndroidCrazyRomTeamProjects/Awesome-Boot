@@ -99,28 +99,41 @@ fun rgb565AlphaInterleavedToArgb8888(
     var src = 0
     var dst = 0
 
-    repeat(pixelCount) {
-        val alpha: Byte
-        val rgbValue: Int
+    // ⚡ Bolt Optimization: Loop unswitching.
+    // Hoisting the loop-invariant `alphaFirst` check outside the loop eliminates
+    // `pixelCount` branch evaluations, significantly speeding up the decoding process.
+    if (alphaFirst) {
+        repeat(pixelCount) {
+            val alpha = data[src]
+            val rgbValue = ((data[src + 2].toInt() and 0xFF) shl 8) or (data[src + 1].toInt() and 0xFF)
 
-        if (alphaFirst) {
-            alpha = data[src]
-            rgbValue = ((data[src + 2].toInt() and 0xFF) shl 8) or (data[src + 1].toInt() and 0xFF)
-        } else {
-            rgbValue = ((data[src + 1].toInt() and 0xFF) shl 8) or (data[src].toInt() and 0xFF)
-            alpha = data[src + 2]
+            val r = (rgbValue shr 11) and 0x1F
+            val g = (rgbValue shr 5) and 0x3F
+            val b = rgbValue and 0x1F
+
+            result[dst++] = ((r shl 3) or (r shr 2)).toByte()
+            result[dst++] = ((g shl 2) or (g shr 4)).toByte()
+            result[dst++] = ((b shl 3) or (b shr 2)).toByte()
+            result[dst++] = alpha
+
+            src += 3
         }
+    } else {
+        repeat(pixelCount) {
+            val rgbValue = ((data[src + 1].toInt() and 0xFF) shl 8) or (data[src].toInt() and 0xFF)
+            val alpha = data[src + 2]
 
-        val r = (rgbValue shr 11) and 0x1F
-        val g = (rgbValue shr 5) and 0x3F
-        val b = rgbValue and 0x1F
+            val r = (rgbValue shr 11) and 0x1F
+            val g = (rgbValue shr 5) and 0x3F
+            val b = rgbValue and 0x1F
 
-        result[dst++] = ((r shl 3) or (r shr 2)).toByte()
-        result[dst++] = ((g shl 2) or (g shr 4)).toByte()
-        result[dst++] = ((b shl 3) or (b shr 2)).toByte()
-        result[dst++] = alpha
+            result[dst++] = ((r shl 3) or (r shr 2)).toByte()
+            result[dst++] = ((g shl 2) or (g shr 4)).toByte()
+            result[dst++] = ((b shl 3) or (b shr 2)).toByte()
+            result[dst++] = alpha
 
-        src += 3
+            src += 3
+        }
     }
 
     return result

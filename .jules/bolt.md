@@ -11,3 +11,7 @@
 ## 2026-03-20 - Single-pass Iteration Over Large Arrays
 **Learning:** Iterating over large arrays multiple times (e.g., millions of pixels) for different operations like alpha extraction and color conversion introduces significant overhead due to duplicated loops and temporary array allocations, leading to increased latency and GC pressure.
 **Action:** When performing multiple sequential transformations on elements of large arrays, combine them into a single-pass loop whenever possible to eliminate intermediate allocations and redundant O(N) iterations.
+
+## 2026-03-23 - Optimizing Tight Kotlin Decoding Loops
+**Learning:** In highly iterated paths like pixel format conversions (processing millions of pixels per second), repetitive array bounds checks (like `rgb565[src + 1]`) and subsequent `.toInt() and 0xFF` operations incur non-trivial overhead. Extracting these into local variables (`v0`, `v1`) and using `dst + offset` assignments followed by a single `dst += 4` block increment reduces both GC pressure and redundant calculations compared to sequentially calling `dst++`. Similarly, `ushr` maps nicely to unsigned operations and helps speed up bit shift combinations.
+**Action:** Always favor bulk local variable extraction and single-step index advances for array processing when writing high-performance, frame-decoding loop algorithms in Kotlin.

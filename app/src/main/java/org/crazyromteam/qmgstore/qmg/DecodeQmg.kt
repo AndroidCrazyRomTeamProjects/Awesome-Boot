@@ -46,11 +46,22 @@ class DecodeQmg(
                 val out = reusableOut
                 var src = 0
                 var dst = 0
+
+                // ⚡ Bolt Optimization: Extracted array accesses into local variables and assigned values
+                // via index offsets rather than repetitive sequential increments. Helps the JIT compiler with
+                // Bounds Check Elimination (BCE) and better instruction pipelining in highly iterated paths.
                 repeat(pixelCount) {
-                    out[dst++] = outBuf[src++] // R
-                    out[dst++] = outBuf[src++] // G
-                    out[dst++] = outBuf[src++] // B
-                    out[dst++] = 0xFF.toByte() // A
+                    val r = outBuf[src]
+                    val g = outBuf[src + 1]
+                    val b = outBuf[src + 2]
+
+                    out[dst] = r // R
+                    out[dst + 1] = g // G
+                    out[dst + 2] = b // B
+                    out[dst + 3] = 0xFF.toByte() // A
+
+                    dst += 4
+                    src += 3
                 }
                 out
             }
@@ -59,11 +70,21 @@ class DecodeQmg(
                 val out = reusableOut
                 var src = 0
                 var dst = 0
+
+                // ⚡ Bolt Optimization: Extracted array accesses into local variables and assigned values
+                // via index offsets rather than repetitive sequential increments. Helps the JIT compiler with
+                // Bounds Check Elimination (BCE) and better instruction pipelining in highly iterated paths.
                 repeat(pixelCount) {
-                    out[dst++] = outBuf[src + 2] // R
-                    out[dst++] = outBuf[src + 1] // G
-                    out[dst++] = outBuf[src]     // B
-                    out[dst++] = 0xFF.toByte()   // A
+                    val b = outBuf[src]
+                    val g = outBuf[src + 1]
+                    val r = outBuf[src + 2]
+
+                    out[dst] = r // R
+                    out[dst + 1] = g // G
+                    out[dst + 2] = b // B
+                    out[dst + 3] = 0xFF.toByte() // A
+
+                    dst += 4
                     src += 3
                 }
                 out
@@ -79,13 +100,25 @@ class DecodeQmg(
 
             Color.ARGB8888 -> {
                 val out = reusableOut
-                var i = 0
+                var src = 0
+                var dst = 0
+
+                // ⚡ Bolt Optimization: Extracted array accesses into local variables and assigned values
+                // via index offsets rather than repetitive sequential increments. Helps the JIT compiler with
+                // Bounds Check Elimination (BCE) and better instruction pipelining in highly iterated paths.
                 repeat(pixelCount) {
-                    out[i + 0] = outBuf[i + 1] // R
-                    out[i + 1] = outBuf[i + 2] // G
-                    out[i + 2] = outBuf[i + 3] // B
-                    out[i + 3] = outBuf[i + 0] // A
-                    i += 4
+                    val a = outBuf[src]
+                    val r = outBuf[src + 1]
+                    val g = outBuf[src + 2]
+                    val b = outBuf[src + 3]
+
+                    out[dst] = r // R
+                    out[dst + 1] = g // G
+                    out[dst + 2] = b // B
+                    out[dst + 3] = a // A
+
+                    src += 4
+                    dst += 4
                 }
                 out
             }
@@ -97,13 +130,25 @@ class DecodeQmg(
 
             Color.BGRA8888 -> {
                 val out = reusableOut
-                var i = 0
+                var src = 0
+                var dst = 0
+
+                // ⚡ Bolt Optimization: Extracted array accesses into local variables and assigned values
+                // via index offsets rather than repetitive sequential increments. Helps the JIT compiler with
+                // Bounds Check Elimination (BCE) and better instruction pipelining in highly iterated paths.
                 repeat(pixelCount) {
-                    out[i + 0] = outBuf[i + 2] // R
-                    out[i + 1] = outBuf[i + 1] // G
-                    out[i + 2] = outBuf[i + 0] // B
-                    out[i + 3] = outBuf[i + 3] // A
-                    i += 4
+                    val b = outBuf[src]
+                    val g = outBuf[src + 1]
+                    val r = outBuf[src + 2]
+                    val a = outBuf[src + 3]
+
+                    out[dst] = r // R
+                    out[dst + 1] = g // G
+                    out[dst + 2] = b // B
+                    out[dst + 3] = a // A
+
+                    src += 4
+                    dst += 4
                 }
                 out
             }

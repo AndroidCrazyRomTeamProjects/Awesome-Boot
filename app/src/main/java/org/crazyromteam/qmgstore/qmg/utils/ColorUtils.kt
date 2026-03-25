@@ -82,16 +82,23 @@ fun splitAlpha(
             }
         }
     } else {
-        repeat(pixelCount) {
-            if (alphaFirst) {
+        // ⚡ Bolt Optimization: Loop unswitching.
+        // Hoisting the loop-invariant `alphaFirst` check outside the loop eliminates
+        // `pixelCount` branch evaluations, reducing execution time.
+        if (alphaFirst) {
+            repeat(pixelCount) {
                 alpha[a++] = data[src]
                 System.arraycopy(data, src + 1, pixels, p, pixelSize - 1)
-            } else {
+                src += pixelSize
+                p += pixelSize - 1
+            }
+        } else {
+            repeat(pixelCount) {
                 System.arraycopy(data, src, pixels, p, pixelSize - 1)
                 alpha[a++] = data[src + pixelSize - 1]
+                src += pixelSize
+                p += pixelSize - 1
             }
-            src += pixelSize
-            p += pixelSize - 1
         }
     }
     return pixels to alpha

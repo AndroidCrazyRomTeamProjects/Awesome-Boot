@@ -35,6 +35,11 @@ class DecodeQmg(
     fun nextFrame(): ByteArray? {
         if (curFrame >= frames || aniPtr == 0L) return null
         curFrame++
+
+        LibQmg.DecodeAniFrameNative(aniPtr, reusableOut, width, height, color.bppType)
+
+        return reusableOut
+        /*
         LibQmg.DecodeAniFrame(aniPtr, outBuf)
 
         val pixelCount = width * height
@@ -155,6 +160,7 @@ class DecodeQmg(
 
             else -> null
         }
+        */
     }
 
     fun release() {

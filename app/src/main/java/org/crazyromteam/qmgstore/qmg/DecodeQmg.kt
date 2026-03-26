@@ -124,8 +124,11 @@ class DecodeQmg(
             }
 
             Color.RGBA8888 -> {
-                System.arraycopy(outBuf, 0, reusableOut, 0, pixelCount * 4)
-                reusableOut
+                // ⚡ Bolt Optimization: Eliminated unnecessary System.arraycopy for RGBA8888 frames.
+                // Since the format perfectly matches the target Android Bitmap Config, we can directly
+                // return the decoding buffer (`outBuf`). The caller synchronously copies this buffer into a Bitmap,
+                // meaning `outBuf` is safely consumed before it gets overwritten in the next decode loop.
+                outBuf
             }
 
             Color.BGRA8888 -> {

@@ -84,8 +84,7 @@ class DecodeQmgBenchmark {
                 }
 
                 Color.RGBA8888 -> {
-                    System.arraycopy(outBuf, 0, reusableOut, 0, pixelCount * 4)
-                    reusableOut
+                    outBuf
                 }
 
                 Color.BGRA8888 -> {
@@ -111,7 +110,7 @@ class DecodeQmgBenchmark {
         val iterations = 500
         val width = 1080
         val height = 2400
-        val colors = listOf(Color.RGB888, Color.ARGB8888, Color.RGB565)
+        val colors = listOf(Color.RGB888, Color.ARGB8888, Color.RGB565, Color.RGBA8888)
 
         println("Starting benchmark...")
 

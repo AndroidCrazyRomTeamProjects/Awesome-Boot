@@ -9,7 +9,8 @@
         android:layout_height="match_parent"
         android:contentDescription="@string/qmg_preview_surface_description"
         android:focusable="true"
-        android:clickable="true" />
+        android:clickable="true"
+        android:foreground="?attr/selectableItemBackground" />
 
     <ProgressBar
         android:id="@+id/qmg_loading_progress"

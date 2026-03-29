@@ -15,3 +15,7 @@
 ## 2026-03-23 - Optimizing Tight Kotlin Decoding Loops
 **Learning:** In highly iterated paths like pixel format conversions (processing millions of pixels per second), repetitive array bounds checks (like `rgb565[src + 1]`) and subsequent `.toInt() and 0xFF` operations incur non-trivial overhead. Extracting these into local variables (`v0`, `v1`) and using `dst + offset` assignments followed by a single `dst += 4` block increment reduces both GC pressure and redundant calculations compared to sequentially calling `dst++`. Similarly, `ushr` maps nicely to unsigned operations and helps speed up bit shift combinations.
 **Action:** Always favor bulk local variable extraction and single-step index advances for array processing when writing high-performance, frame-decoding loop algorithms in Kotlin.
+
+## 2024-05-24 - Removing Redundant Frame Buffer Copies
+**Learning:** During QMG animation playback, when the decoded frame format matches the target format (e.g., RGBA8888), using `System.arraycopy` to move pixel data from the decoding buffer to a reusable output buffer is completely redundant. Since the caller only reads the byte array to copy pixels to a Bitmap before the next frame, we can safely return the source buffer reference directly.
+**Action:** Eliminate unnecessary `System.arraycopy` operations in tight decoding loops by returning the source buffer directly when the output format requires no transformations, saving significant memory bandwidth and CPU cycles per frame.

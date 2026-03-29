@@ -22,3 +22,6 @@
 ## 2026-03-20 - Immersive View Accessibility
 **Learning:** When implementing full-screen immersive views (like `SurfaceView` for animation previews) that rely on a tap-to-exit interaction, they often become a "trap" for screen reader users if they lack a `contentDescription`. Screen readers won't announce what the view is, and users won't know they can activate it to exit.
 **Action:** Always provide a clear `contentDescription` (e.g., 'Full screen animation preview') and ensure `android:clickable="true"` and `android:focusable="true"` on the `SurfaceView` so the screen reader can append its standard 'Double tap to activate' instruction and users understand how to escape the view.
+## 2026-03-29 - Toolbar Back Navigation Accessibility
+**Learning:** When using `androidx.appcompat.widget.Toolbar` with back navigation enabled (`setDisplayHomeAsUpEnabled(true)`), it provides no default announcement for screen reader users on the navigation button. This leads to an unlabelled button that users must guess the function of.
+**Action:** Always include `app:navigationContentDescription` (such as `@string/navigate_up`) in the XML layout of a Toolbar when back navigation is enabled to provide a descriptive label for screen readers.

@@ -19,3 +19,7 @@
 ## 2024-05-24 - Removing Redundant Frame Buffer Copies
 **Learning:** During QMG animation playback, when the decoded frame format matches the target format (e.g., RGBA8888), using `System.arraycopy` to move pixel data from the decoding buffer to a reusable output buffer is completely redundant. Since the caller only reads the byte array to copy pixels to a Bitmap before the next frame, we can safely return the source buffer reference directly.
 **Action:** Eliminate unnecessary `System.arraycopy` operations in tight decoding loops by returning the source buffer directly when the output format requires no transformations, saving significant memory bandwidth and CPU cycles per frame.
+
+## 2024-05-25 - Caching ByteBuffer.wrap() in Render Loops
+**Learning:** In high-frequency rendering loops (e.g., 30fps animation decoding in ViewModels), continuously allocating new wrapper objects via `ByteBuffer.wrap()` creates unnecessary `HeapByteBuffer` instances. This generates significant memory garbage over time, leading to frequent Garbage Collection (GC) pauses which cause frame drops and stuttering.
+**Action:** Instead of re-wrapping the byte array on every frame, cache a single `ByteBuffer` instance and reuse it by calling `.position(0)` before each frame copy, eliminating the allocation overhead.

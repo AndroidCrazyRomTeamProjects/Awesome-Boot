@@ -47,6 +47,10 @@ class QmgPreviewViewModel : ViewModel() {
         val dstRect = Rect(0, 0, header.width, header.height)
         val paint = Paint()
 
+        // Cache a single ByteBuffer to avoid allocating a new HeapByteBuffer object per frame
+        var cachedBuffer: ByteBuffer? = null
+        var cachedArray: ByteArray? = null
+
         try {
             do {
                 decoder.reset()
@@ -54,7 +58,15 @@ class QmgPreviewViewModel : ViewModel() {
                     if (!currentCoroutineContext().isActive) break
 
                     val raw = decoder.nextFrame() ?: break
-                    bitmap.copyPixelsFromBuffer(ByteBuffer.wrap(raw))
+
+                    // Re-wrap only if the underlying array instance changes
+                    if (cachedArray !== raw) {
+                        cachedArray = raw
+                        cachedBuffer = ByteBuffer.wrap(raw)
+                    }
+
+                    cachedBuffer!!.position(0)
+                    bitmap.copyPixelsFromBuffer(cachedBuffer)
 
                     val canvas: Canvas? = try {
                         surface.lockCanvas(null)

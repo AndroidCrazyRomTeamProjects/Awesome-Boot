@@ -47,6 +47,9 @@ class QmgPreviewViewModel : ViewModel() {
         val dstRect = Rect(0, 0, header.width, header.height)
         val paint = Paint()
 
+        var cachedRaw: ByteArray? = null
+        var cachedBuffer: ByteBuffer? = null
+
         try {
             do {
                 decoder.reset()
@@ -54,7 +57,15 @@ class QmgPreviewViewModel : ViewModel() {
                     if (!currentCoroutineContext().isActive) break
 
                     val raw = decoder.nextFrame() ?: break
-                    bitmap.copyPixelsFromBuffer(ByteBuffer.wrap(raw))
+
+                    if (raw !== cachedRaw || cachedBuffer == null) {
+                        cachedRaw = raw
+                        cachedBuffer = ByteBuffer.wrap(raw)
+                    } else {
+                        cachedBuffer.rewind()
+                    }
+
+                    bitmap.copyPixelsFromBuffer(cachedBuffer)
 
                     val canvas: Canvas? = try {
                         surface.lockCanvas(null)

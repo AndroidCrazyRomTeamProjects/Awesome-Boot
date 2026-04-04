@@ -46,6 +46,7 @@ class QmgPreviewViewModel : ViewModel() {
         val bitmap = createBitmap(header.width, header.height, Bitmap.Config.ARGB_8888)
         val dstRect = Rect(0, 0, header.width, header.height)
         val paint = Paint()
+        var byteBuffer: ByteBuffer? = null
 
         try {
             do {
@@ -54,7 +55,14 @@ class QmgPreviewViewModel : ViewModel() {
                     if (!currentCoroutineContext().isActive) break
 
                     val raw = decoder.nextFrame() ?: break
-                    bitmap.copyPixelsFromBuffer(ByteBuffer.wrap(raw))
+                    // ⚡ Bolt Optimization: Reuse ByteBuffer instance to prevent allocating
+                    // a new HeapByteBuffer object on every frame in the 30 FPS render loop.
+                    if (byteBuffer == null || byteBuffer.array() !== raw) {
+                        byteBuffer = ByteBuffer.wrap(raw)
+                    } else {
+                        byteBuffer.position(0)
+                    }
+                    bitmap.copyPixelsFromBuffer(byteBuffer)
 
                     val canvas: Canvas? = try {
                         surface.lockCanvas(null)

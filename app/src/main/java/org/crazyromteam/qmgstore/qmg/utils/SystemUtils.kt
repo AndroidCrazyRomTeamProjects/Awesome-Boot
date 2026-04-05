@@ -6,10 +6,10 @@ import kotlinx.coroutines.withContext
 class SystemUtils {
     suspend fun readSystemFile(path: String): ByteArray = withContext(Dispatchers.IO) {
         try {
-            val process = Runtime.getRuntime().exec(arrayOf("cat", path))
-            process.inputStream.readBytes().also {
-                process.waitFor()
-            }
+            // ⚡ Bolt Optimization: Replace slow shell process execution (`cat`)
+            // with standard `java.io` file reading. Spawning a new process on Android
+            // is extremely expensive and blocks significantly longer than a direct file read.
+            java.io.File(path).readBytes()
         } catch (e: Exception) {
             e.printStackTrace()
             ByteArray(0)

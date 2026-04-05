@@ -19,3 +19,7 @@
 ## 2024-05-24 - Removing Redundant Frame Buffer Copies
 **Learning:** During QMG animation playback, when the decoded frame format matches the target format (e.g., RGBA8888), using `System.arraycopy` to move pixel data from the decoding buffer to a reusable output buffer is completely redundant. Since the caller only reads the byte array to copy pixels to a Bitmap before the next frame, we can safely return the source buffer reference directly.
 **Action:** Eliminate unnecessary `System.arraycopy` operations in tight decoding loops by returning the source buffer directly when the output format requires no transformations, saving significant memory bandwidth and CPU cycles per frame.
+
+## 2025-05-24 - File Reading I/O Bottleneck
+**Learning:** Spawning a shell process (`Runtime.getRuntime().exec(arrayOf("cat", path))`) to read the contents of a file on Android is enormously slower compared to reading files natively using standard library APIs (`java.io.File(path).readBytes()`). The overhead of process forking causes massive latency.
+**Action:** Never use `cat` or subprocess execution to read file contents; always prefer standard JVM I/O utilities like `java.io.File.readBytes()` for faster and safer disk reads.

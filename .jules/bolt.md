@@ -23,3 +23,6 @@
 ## 2025-05-24 - File Reading I/O Bottleneck
 **Learning:** Spawning a shell process (`Runtime.getRuntime().exec(arrayOf("cat", path))`) to read the contents of a file on Android is enormously slower compared to reading files natively using standard library APIs (`java.io.File(path).readBytes()`). The overhead of process forking causes massive latency.
 **Action:** Never use `cat` or subprocess execution to read file contents; always prefer standard JVM I/O utilities like `java.io.File.readBytes()` for faster and safer disk reads.
+## 2026-04-11 - Cached Immutable Property Accesses
+**Learning:** In high-frequency rendering loops (e.g., QMG animation loops in ViewModels), evaluating properties of an object inside `while` or `do-while` loop conditions (like `header.repeat`) triggers getter method calls on each iteration, which adds non-trivial overhead over millions of cycles.
+**Action:** Always cache immutable object properties into local variables before entering high-frequency loops in JVM/ART environments to avoid repetitive getter overhead.

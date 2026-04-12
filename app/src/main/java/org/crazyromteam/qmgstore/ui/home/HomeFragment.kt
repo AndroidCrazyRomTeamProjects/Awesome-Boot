@@ -42,6 +42,10 @@ class HomeFragment : Fragment() {
         binding.themesRecyclerView.apply {
             layoutManager = GridLayoutManager(context, 3)
             adapter = themeAdapter
+            // ⚡ Bolt Optimization: Use setHasFixedSize(true) since the RecyclerView dimensions
+            // are defined as match_parent and don't change dynamically based on the content.
+            // This skips redundant layout measurements and improves scrolling/rendering performance.
+            setHasFixedSize(true)
         }
 
         binding.retryBtn.setOnClickListener {

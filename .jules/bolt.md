@@ -23,3 +23,11 @@
 ## 2025-05-24 - File Reading I/O Bottleneck
 **Learning:** Spawning a shell process (`Runtime.getRuntime().exec(arrayOf("cat", path))`) to read the contents of a file on Android is enormously slower compared to reading files natively using standard library APIs (`java.io.File(path).readBytes()`). The overhead of process forking causes massive latency.
 **Action:** Never use `cat` or subprocess execution to read file contents; always prefer standard JVM I/O utilities like `java.io.File.readBytes()` for faster and safer disk reads.
+
+## 2024-05-25 - Avoid Premature Micro-Optimizations
+**Learning:** Caching immutable object properties (like `header.repeat`) accessed within outer loops (e.g., a `while` condition enclosing a high-frequency `for` loop) provides no measurable performance benefit if the condition is only evaluated once per full animation cycle. Additionally, Kotlin's `for (i in 0 until property)` evaluates the limit only once, not per frame.
+**Action:** Always focus performance efforts on operations occurring inside the highest-frequency execution paths (e.g., inside a 30 FPS rendering loop) rather than extracting properties checked rarely.
+
+## 2024-05-25 - Skip Redundant RecyclerView Layout Passes
+**Learning:** By default, Android's `RecyclerView` re-measures its layout bounds whenever its underlying adapter data changes. If the `RecyclerView` size is fixed by its container constraints (e.g., `match_parent`), this measurement pass is entirely redundant and slows down rendering.
+**Action:** Always call `setHasFixedSize(true)` on any `RecyclerView` whose overall dimensions do not change dynamically based on its item contents, bypassing unnecessary layout traversals during adapter updates.

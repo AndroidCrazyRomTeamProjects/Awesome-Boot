@@ -23,3 +23,7 @@
 ## 2025-05-24 - File Reading I/O Bottleneck
 **Learning:** Spawning a shell process (`Runtime.getRuntime().exec(arrayOf("cat", path))`) to read the contents of a file on Android is enormously slower compared to reading files natively using standard library APIs (`java.io.File(path).readBytes()`). The overhead of process forking causes massive latency.
 **Action:** Never use `cat` or subprocess execution to read file contents; always prefer standard JVM I/O utilities like `java.io.File.readBytes()` for faster and safer disk reads.
+
+## 2024-05-25 - Skip Redundant RecyclerView Layout Measurements
+**Learning:** By default, when the content of an Android `RecyclerView.Adapter` changes, the `RecyclerView` may invalidate its layout and recalculate its dimensions. If the `RecyclerView` is configured with dimensions that are independent of its content (e.g., `match_parent` or fixed DP values), these measurement passes are entirely redundant and waste UI thread cycles.
+**Action:** When initializing a `RecyclerView` that has a fixed overall size, always call `setHasFixedSize(true)` to skip redundant layout measurements and improve rendering performance during data updates.

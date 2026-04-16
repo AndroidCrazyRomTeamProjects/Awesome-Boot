@@ -40,6 +40,10 @@ class HomeFragment : Fragment() {
         }
 
         binding.themesRecyclerView.apply {
+            // ⚡ Bolt Optimization: setHasFixedSize(true)
+            // The RecyclerView dimensions match its parent and do not change based on adapter content.
+            // This prevents redundant layout measurements on every adapter update.
+            setHasFixedSize(true)
             layoutManager = GridLayoutManager(context, 3)
             adapter = themeAdapter
         }

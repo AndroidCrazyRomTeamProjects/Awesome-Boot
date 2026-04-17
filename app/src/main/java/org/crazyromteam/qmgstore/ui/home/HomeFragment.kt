@@ -42,6 +42,8 @@ class HomeFragment : Fragment() {
         binding.themesRecyclerView.apply {
             layoutManager = GridLayoutManager(context, 3)
             adapter = themeAdapter
+            // ⚡ Bolt Optimization: Skipping redundant layout measurements since the size does not change dynamically.
+            setHasFixedSize(true)
         }
 
         binding.retryBtn.setOnClickListener {

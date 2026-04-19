@@ -33,9 +33,18 @@ class HomeViewModel : ViewModel() {
             _error.postValue("") // Reset error on fetch (using empty string instead of null as requested by previous compiler error)
             try {
                 val themeResponse = RetrofitClient.apiService.getThemes()
-                val themeList = themeResponse.flatMap { (id, items) ->
-                    items.onEach { it.id = id }
+
+                // ⚡ Bolt Optimization: Avoid redundant intermediate list allocations and O(N) iterations
+                // by using an ArrayList with initial capacity and a single pass to map the keys to items.
+                val totalSize = themeResponse.values.sumOf { it.size }
+                val themeList = ArrayList<ThemeItem>(totalSize)
+                for ((id, items) in themeResponse) {
+                    for (item in items) {
+                        item.id = id
+                        themeList.add(item)
+                    }
                 }
+
                 _themes.postValue(themeList)
             } catch (e: Exception) {
                 Log.e("HomeViewModel", "Error fetching themes", e)

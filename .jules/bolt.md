@@ -23,3 +23,7 @@
 ## 2025-05-24 - File Reading I/O Bottleneck
 **Learning:** Spawning a shell process (`Runtime.getRuntime().exec(arrayOf("cat", path))`) to read the contents of a file on Android is enormously slower compared to reading files natively using standard library APIs (`java.io.File(path).readBytes()`). The overhead of process forking causes massive latency.
 **Action:** Never use `cat` or subprocess execution to read file contents; always prefer standard JVM I/O utilities like `java.io.File.readBytes()` for faster and safer disk reads.
+
+## 2026-04-20 - Flattening Maps to Lists without Redundancy
+**Learning:** When flattening a `Map<K, List<V>>` into a single `List` while modifying the list elements (e.g., setting a field derived from the key), using `flatMap { ... onEach { ... } }` creates unnecessary intermediate lists and iterates over the elements multiple times, increasing GC pressure and execution time.
+**Action:** Always calculate the total list size upfront (`val totalSize = map.values.sumOf { it.size }`), initialize an `ArrayList` with that capacity, and use a nested `for` loop to populate the list in a single pass.

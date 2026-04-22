@@ -48,10 +48,16 @@ class QmgPreviewViewModel : ViewModel() {
         val paint = Paint()
         var byteBuffer: ByteBuffer? = null
 
+        // ⚡ Bolt Optimization: Cache immutable object properties (like `header.frames` and `header.repeat`)
+        // before entering the high-frequency rendering loop. This avoids the overhead of repeated
+        // getter method calls during each iteration.
+        val framesCount = header.frames
+        val repeatAnimation = header.repeat
+
         try {
             do {
                 decoder.reset()
-                for (i in 0 until header.frames) {
+                for (i in 0 until framesCount) {
                     if (!currentCoroutineContext().isActive) break
 
                     val raw = decoder.nextFrame() ?: break
@@ -81,7 +87,7 @@ class QmgPreviewViewModel : ViewModel() {
                     }
                     delay(33L) // 30 FPS
                 }
-            } while (currentCoroutineContext().isActive && (repeat || header.repeat))
+            } while (currentCoroutineContext().isActive && (repeat || repeatAnimation))
         } finally {
             decoder.release()
         }

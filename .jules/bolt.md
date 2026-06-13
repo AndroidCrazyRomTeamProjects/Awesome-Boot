@@ -26,3 +26,6 @@
 ## 2026-04-11 - Cached Immutable Property Accesses
 **Learning:** In high-frequency rendering loops (e.g., QMG animation loops in ViewModels), evaluating properties of an object inside `while` or `do-while` loop conditions (like `header.repeat`) triggers getter method calls on each iteration, which adds non-trivial overhead over millions of cycles.
 **Action:** Always cache immutable object properties into local variables before entering high-frequency loops in JVM/ART environments to avoid repetitive getter overhead.
+## 2026-06-13 - ThreadLocal ByteBuffer Caching in Singletons
+**Learning:** When trying to eliminate object allocations (like `ByteBuffer.wrap()`) inside a Kotlin singleton (`object` like `QmgPreviewExtractor`) that handles requests from multiple coroutines concurrently, a simple class property cannot be used because `ByteBuffer` maintains its own internal state (position, limit) making it non-thread-safe.
+**Action:** Use `ThreadLocal<ByteBuffer>` inside singletons. This provides each calling thread with its own cached `ByteBuffer` instance, safely eliminating high-frequency allocations while avoiding race conditions in concurrent `getFirstFrame` calls.

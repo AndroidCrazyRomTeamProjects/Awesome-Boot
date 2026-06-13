@@ -15,6 +15,8 @@ object QmgPreviewExtractor {
      * @param qmgData The raw bytes of the QMG file.
      * @return A Bitmap of the first frame, or null if decoding fails.
      */
+    private val bufferCache = ThreadLocal<ByteBuffer>()
+
     fun getFirstFrame(qmgData: ByteArray): Bitmap? {
         return try {
             val header = QmgHeader(qmgData)
@@ -34,7 +36,16 @@ object QmgPreviewExtractor {
             if (frameData != null) {
                 Log.d(TAG, "Frame decoded successfully, size: ${frameData.size}")
                 val bitmap = Bitmap.createBitmap(header.width, header.height, Bitmap.Config.ARGB_8888)
-                bitmap.copyPixelsFromBuffer(ByteBuffer.wrap(frameData))
+
+                var byteBuffer = bufferCache.get()
+                if (byteBuffer == null || byteBuffer.array() !== frameData) {
+                    byteBuffer = ByteBuffer.wrap(frameData)
+                    bufferCache.set(byteBuffer)
+                } else {
+                    byteBuffer.position(0)
+                }
+
+                bitmap.copyPixelsFromBuffer(byteBuffer)
                 bitmap
             } else {
                 Log.e(TAG, "Failed to decode the first frame")

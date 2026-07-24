@@ -29,3 +29,7 @@
 ## 2026-06-13 - ThreadLocal ByteBuffer Caching in Singletons
 **Learning:** When trying to eliminate object allocations (like `ByteBuffer.wrap()`) inside a Kotlin singleton (`object` like `QmgPreviewExtractor`) that handles requests from multiple coroutines concurrently, a simple class property cannot be used because `ByteBuffer` maintains its own internal state (position, limit) making it non-thread-safe.
 **Action:** Use `ThreadLocal<ByteBuffer>` inside singletons. This provides each calling thread with its own cached `ByteBuffer` instance, safely eliminating high-frequency allocations while avoiding race conditions in concurrent `getFirstFrame` calls.
+
+## 2024-05-30 - Magic Number Parsing Optimization
+**Learning:** Parsing file headers or magic numbers by creating strings from byte arrays (e.g., `String(headerBytes.copyOfRange(0, 4), Charsets.US_ASCII)`) introduces significant allocation overhead inside tight loops or hot paths.
+**Action:** When validating file signatures or magic numbers in byte arrays, compare the bytes directly against the expected ASCII byte values (e.g., `b0 == 0x49.toByte()`) to completely avoid temporary array and string allocations.

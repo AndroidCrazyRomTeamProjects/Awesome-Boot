@@ -19,13 +19,13 @@ class QmgHeader(
 
             val buffer = ByteBuffer.wrap(headerBytes).order(ByteOrder.LITTLE_ENDIAN)
 
-            val m2 = String(headerBytes.copyOfRange(0, 2), Charsets.US_ASCII)
-            val m4 = String(headerBytes.copyOfRange(0, 4), Charsets.US_ASCII)
+            val b0 = headerBytes[0]
+            val b1 = headerBytes[1]
 
             return when {
-                m4 == "IFEG" -> IfegFormatStrategy.parse(headerBytes, buffer)
-                m2 == "IM" -> ImFormatStrategy.parse(headerBytes, buffer)
-                m2 == "QM" -> QmFormatStrategy.parse(headerBytes, buffer)
+                b0 == 0x49.toByte() && b1 == 0x46.toByte() && headerBytes[2] == 0x45.toByte() && headerBytes[3] == 0x47.toByte() -> IfegFormatStrategy.parse(headerBytes, buffer) // IFEG
+                b0 == 0x49.toByte() && b1 == 0x4D.toByte() -> ImFormatStrategy.parse(headerBytes, buffer) // IM
+                b0 == 0x51.toByte() && b1 == 0x4D.toByte() -> QmFormatStrategy.parse(headerBytes, buffer) // QM
                 else -> throw Exception("Unknown animation type in QMG header")
             }
         }
